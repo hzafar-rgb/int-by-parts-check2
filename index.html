@@ -1,0 +1,2610 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AQA Year 13 Maths: Integration by Parts</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX for crisp textbook mathematical typesetting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom projection-optimized styles */
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      user-select: none;
+    }
+
+    /* Scale KaTeX nicely for back-of-classroom visibility */
+    .card-math-12 .katex {
+      font-size: clamp(1.25rem, 1.85vw, 1.85rem);
+      line-height: 1.2;
+    }
+
+    .card-math-6 .katex {
+      font-size: clamp(1.45rem, 2.3vw, 2.35rem);
+      line-height: 1.25;
+    }
+
+    .card-math-6-multipart .katex {
+      font-size: clamp(1.18rem, 1.7vw, 1.72rem);
+      line-height: 1.3;
+    }
+
+    .header-formula .katex {
+      font-size: clamp(0.92rem, 1.15vw, 1.15rem);
+    }
+
+    .modal-question-math .katex {
+      font-size: clamp(1.35rem, 2.1vw, 2.1rem);
+    }
+
+    .modal-step-math .katex {
+      font-size: clamp(1.1rem, 1.45vw, 1.42rem);
+    }
+
+    .modal-answer-math .katex {
+      font-size: clamp(1.3rem, 1.8vw, 1.75rem);
+    }
+
+    /* Smooth card hover & active animations */
+    .question-card {
+      transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+                  border-color 0.16s ease;
+    }
+    .question-card:hover {
+      transform: translateY(-2px);
+    }
+    .question-card:active {
+      transform: translateY(0px) scale(0.995);
+    }
+
+    /* Custom subtle scrollbars inside modal if needed on smaller screens */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.55);
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen lg:h-screen lg:overflow-hidden flex flex-col transition-colors duration-200">
+
+  <!-- ==================== COMPACT CLASSROOM HEADER BAR ==================== -->
+  <header class="shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-3 sm:px-5 py-2.5 shadow-sm z-20">
+    <div class="max-w-[1920px] mx-auto flex flex-wrap items-center justify-between gap-2.5">
+      
+      <!-- Left: Spec Badge, Main Title & Question Set Switcher -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2 bg-indigo-600 text-white font-extrabold text-xs sm:text-sm px-2.5 py-1 rounded-lg shadow-sm tracking-wide">
+          <span>AQA 7357</span>
+          <span class="opacity-60">•</span>
+          <span>Y13</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h1 id="mainHeaderTitle" class="text-base sm:text-lg xl:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+              Integration by Parts: <span class="text-indigo-600 dark:text-indigo-400">ln(x) as "u"</span> (6 Questions)
+            </h1>
+          </div>
+          <div class="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <span>Click any card for step-by-step worked solution</span>
+            <span>•</span>
+            <span id="progressCounter" class="font-semibold text-indigo-600 dark:text-indigo-400">0 / 6 Completed</span>
+          </div>
+        </div>
+
+        <!-- Set Switcher Tabs (6-Question ln(x) Grid vs 12-Question Standard Grid) -->
+        <div class="flex items-center bg-slate-200/80 dark:bg-slate-800 p-1 rounded-xl border border-slate-300/60 dark:border-slate-700">
+          <button
+            id="tabLnSet"
+            onclick="switchQuestionSet('ln6')"
+            class="px-3 py-1 rounded-lg text-xs font-bold transition-all bg-indigo-600 text-white shadow-sm"
+          >
+            ln(x) as "u" (3×2)
+          </button>
+          <button
+            id="tabStdSet"
+            onclick="switchQuestionSet('std12')"
+            class="px-3 py-1 rounded-lg text-xs font-bold transition-all text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+          >
+            Standard IBP (3×4)
+          </button>
+        </div>
+      </div>
+
+      <!-- Center: Toggleable AQA Formula Pill -->
+      <div class="flex items-center gap-2">
+        <button
+          id="formulaToggleBtn"
+          onclick="toggleFormula()"
+          title="Click to hide or reveal the AQA Formula Book identity"
+          class="group flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-800/80 bg-indigo-50/80 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-all shadow-sm"
+        >
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
+            <svg id="formulaEyeIcon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span id="formulaLabelText">Formula:</span>
+          </span>
+          <span id="formulaMathContainer" class="header-formula text-slate-900 dark:text-white font-medium"></span>
+          <span id="formulaHiddenBadge" class="hidden text-xs font-semibold italic text-slate-500 dark:text-slate-400">
+            Hidden (Click to reveal)
+          </span>
+        </button>
+      </div>
+
+      <!-- Right: Classroom Controls -->
+      <div class="flex items-center gap-2">
+        <!-- Generate New Values Button -->
+        <button
+          onclick="generateNewValues()"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-sm transition-colors"
+          title="Randomize coefficients and functions while maintaining difficulty progression"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Generate New Values</span>
+        </button>
+
+        <!-- Restore Default Canonical Questions Button (shown when randomized) -->
+        <button
+          id="restoreDefaultBtn"
+          onclick="restoreDefaultQuestions()"
+          class="hidden items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+          title="Return to the default questions for this set"
+        >
+          <span>Default Set</span>
+        </button>
+
+        <!-- Reset Completed Button -->
+        <button
+          onclick="resetCompleted()"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-slate-200/90 hover:bg-slate-300/90 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+          title="Clear all completed ticks"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="hidden xl:inline">Reset Completed</span>
+          <span class="xl:hidden">Reset</span>
+        </button>
+
+        <!-- Dark / Light Board Mode Toggle -->
+        <button
+          onclick="toggleTheme()"
+          id="themeToggleBtn"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 transition-colors shadow-sm"
+          title="Switch between High-Contrast Dark & Light Classroom Board Modes"
+        >
+          <!-- Sun Icon (shown in dark mode) -->
+          <svg id="sunIcon" class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- Moon Icon (shown in light mode) -->
+          <svg id="moonIcon" class="w-4 h-4 text-indigo-600 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+          <span id="themeToggleText" class="hidden md:inline">Light Board</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CLASSROOM QUESTION GRID ==================== -->
+  <main class="flex-1 min-h-0 p-2.5 sm:p-4 max-w-[1920px] w-full mx-auto flex flex-col">
+    <div
+      id="questionGrid"
+      class="flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-3.5 sm:gap-5"
+    >
+      <!-- Populated dynamically via JS -->
+    </div>
+  </main>
+
+  <!-- ==================== WORKED SOLUTION POP-UP MODAL ==================== -->
+  <div
+    id="solutionModal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-3 sm:p-6"
+    onclick="handleModalBackdropClick(event)"
+  >
+    <div
+      class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/90 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[94vh] flex flex-col overflow-hidden transition-all"
+      onclick="event.stopPropagation()"
+    >
+      <!-- Modal Top Header -->
+      <div class="shrink-0 px-5 py-3.5 bg-slate-50 dark:bg-slate-800/70 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span id="modalQNumber" class="px-3 py-1 rounded-lg font-extrabold text-sm sm:text-base bg-indigo-600 text-white shadow-sm">
+            Q1
+          </span>
+          <span id="modalDifficultyBadge" class="px-3 py-1 rounded-full text-xs sm:text-sm font-bold tracking-wide">
+            Fluency
+          </span>
+          <span id="modalSubtitle" class="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 hidden sm:inline">
+            Basic exponential
+          </span>
+        </div>
+
+        <!-- Modal Navigation & Close Controls -->
+        <div class="flex items-center gap-2">
+          <button
+            onclick="navigateModal(-1)"
+            id="prevQuestionBtn"
+            class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-slate-200/80 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+            title="Previous Question (Left Arrow)"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Prev</span>
+          </button>
+
+          <button
+            onclick="navigateModal(1)"
+            id="nextQuestionBtn"
+            class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-slate-200/80 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+            title="Next Question (Right Arrow)"
+          >
+            <span>Next</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <div class="h-5 w-px bg-slate-300 dark:bg-slate-700 mx-1"></div>
+
+          <button
+            onclick="closeModal()"
+            class="p-1.5 rounded-lg bg-slate-200/70 hover:bg-rose-500 hover:text-white dark:bg-slate-800 dark:hover:bg-rose-600 text-slate-600 dark:text-slate-300 transition-colors"
+            title="Close Modal (Esc)"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Prominent Question Banner -->
+      <div class="shrink-0 px-6 py-4 bg-gradient-to-r from-indigo-50/70 via-white to-indigo-50/70 dark:from-slate-900 dark:via-slate-800/60 dark:to-slate-900 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 w-full">
+          <span id="modalPromptBadge" class="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-950/90 px-2.5 py-1 rounded-md shrink-0">
+            Evaluate
+          </span>
+          <div id="modalQuestionMath" class="modal-question-math text-slate-900 dark:text-white py-1 flex-1"></div>
+        </div>
+
+        <!-- Reference Formula Reminder inside Modal -->
+        <div class="text-xs sm:text-sm px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 shrink-0">
+          <span id="modalFormulaRef"></span>
+        </div>
+      </div>
+
+      <!-- Modal Scrollable Worked Solution Steps Container -->
+      <div id="modalStepsScrollContainer" class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
+        
+        <!-- STEP 1: IDENTIFY PARTS -->
+        <div id="stepCard1" class="rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-800/40 overflow-hidden transition-all">
+          <div class="px-4 py-2.5 bg-slate-200/60 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700/80 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">1</span>
+              <h3 class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100">
+                Identify Parts (<span id="step1HeaderMath"></span>)
+              </h3>
+            </div>
+            <span id="step1Tip" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400"></span>
+          </div>
+          <div id="stepContent1" class="p-4 sm:p-5">
+            <!-- Populated with 2x2 grid of u, du/dx, dv/dx, v -->
+          </div>
+        </div>
+
+        <!-- STEP 2: APPLY INTEGRATION BY PARTS FORMULA -->
+        <div id="stepCard2" class="rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-800/40 overflow-hidden transition-all">
+          <div class="px-4 py-2.5 bg-slate-200/60 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700/80 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">2</span>
+              <h3 class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100">
+                Apply Integration by Parts Formula
+              </h3>
+            </div>
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Substitute into <span id="step2SubFormula"></span></span>
+          </div>
+          <div id="stepContent2" class="p-4 sm:p-5 modal-step-math space-y-2.5"></div>
+        </div>
+
+        <!-- STEP 3: EVALUATE REMAINING INTEGRAL / SECOND IBP / LIMITS -->
+        <div id="stepCard3" class="rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-800/40 overflow-hidden transition-all">
+          <div class="px-4 py-2.5 bg-slate-200/60 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700/80 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">3</span>
+              <h3 id="step3Title" class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100">
+                Evaluate Remaining Integral
+              </h3>
+            </div>
+          </div>
+          <div id="stepContent3" class="p-4 sm:p-5 modal-step-math space-y-2.5"></div>
+        </div>
+
+        <!-- STEP 4: FINAL ANSWER -->
+        <div id="stepCard4" class="rounded-xl border-2 border-emerald-500/80 dark:border-emerald-500/70 bg-emerald-50/70 dark:bg-emerald-950/30 overflow-hidden transition-all">
+          <div class="px-4 py-2.5 bg-emerald-500/15 dark:bg-emerald-900/40 border-b border-emerald-500/30 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center">4</span>
+              <h3 class="font-bold text-sm sm:text-base text-emerald-900 dark:text-emerald-200">
+                Final Answer
+              </h3>
+            </div>
+            <span id="step4Note" class="text-xs font-semibold text-emerald-700 dark:text-emerald-300"></span>
+          </div>
+          <div id="stepContent4" class="p-4 sm:p-5 modal-answer-math text-emerald-950 dark:text-emerald-100 font-semibold"></div>
+        </div>
+
+      </div>
+
+      <!-- Modal Interactive Classroom Footer Bar -->
+      <div class="shrink-0 px-5 py-3.5 bg-slate-100 dark:bg-slate-800/90 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        
+        <!-- Left: Step Reveal Controls -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button
+            id="revealNextStepBtn"
+            onclick="revealNextStep()"
+            class="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 transition-all"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+            <span id="revealNextStepText">Reveal Step 1 (Identify Parts)</span>
+          </button>
+
+          <button
+            id="toggleAllStepsBtn"
+            onclick="toggleAllSteps()"
+            class="px-3.5 py-2 rounded-xl font-semibold text-xs sm:text-sm border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 transition-colors"
+          >
+            Show All Steps
+          </button>
+
+          <span id="stepProgressBadge" class="text-xs font-semibold text-slate-500 dark:text-slate-400 px-2">
+            0 / 4 steps shown
+          </span>
+        </div>
+
+        <!-- Right: Mark Complete & Auto-Reveal Mode Toggle -->
+        <div class="flex items-center gap-3">
+          <label class="hidden md:flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer">
+            <input
+              type="checkbox"
+              id="autoShowAllCheckbox"
+              onchange="toggleAutoShowAllPreference()"
+              class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+            />
+            <span>Always open with all steps shown</span>
+          </label>
+
+          <button
+            id="modalCompleteBtn"
+            onclick="toggleCurrentModalQuestionCompleted()"
+            class="flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm border transition-all"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span id="modalCompleteBtnText">Mark Complete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== APPLICATION LOGIC & QUESTION BANK ==================== -->
+  <script>
+    // ============================================================================
+    // DIFFICULTY TIER STYLING METADATA
+    // ============================================================================
+    const TIER_CONFIG = {
+      fluency: {
+        label: 'Fluency',
+        badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/90 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-700/70',
+        accentBorder: 'border-l-4 border-l-emerald-500',
+        numberPill: 'bg-emerald-600 text-white'
+      },
+      developing: {
+        label: 'Developing',
+        badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-950/90 dark:text-sky-300 border border-sky-300/80 dark:border-sky-700/70',
+        accentBorder: 'border-l-4 border-l-sky-500',
+        numberPill: 'bg-sky-600 text-white'
+      },
+      exam: {
+        label: 'Exam Standard',
+        badgeClass: 'bg-amber-100 text-amber-900 dark:bg-amber-950/90 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700/70',
+        accentBorder: 'border-l-4 border-l-amber-500',
+        numberPill: 'bg-amber-600 text-white'
+      },
+      challenge: {
+        label: 'Exam Challenge',
+        badgeClass: 'bg-purple-100 text-purple-900 dark:bg-purple-950/90 dark:text-purple-300 border border-purple-300/80 dark:border-purple-700/70',
+        accentBorder: 'border-l-4 border-l-purple-500',
+        numberPill: 'bg-purple-600 text-white'
+      }
+    };
+
+    // ============================================================================
+    // SET 1 (DEFAULT): 6-QUESTION "ln(x) AS u" PROGRESSION (3 COLUMNS x 2 ROWS)
+    // Progresses from basic polynomial * ln(x) up to OCR C4 June 2018 Q5ii
+    // ============================================================================
+    const LN_QUESTION_SLOTS = [
+      // -------------------------------------------------------------------------
+      // Q1: Basic Polynomial x^n ln(x)
+      // -------------------------------------------------------------------------
+      {
+        id: 1,
+        tier: 'fluency',
+        subtitle: 'Level 1 • Polynomial × ln(x)',
+        variations: [
+          {
+            questionLatex: '\\int x^3 \\ln x \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x}',
+            dvdx: 'x^3',
+            v: '\\frac{1}{4}x^4',
+            tip: 'Choose u = ln x because we can differentiate ln x easily (du/dx = 1/x).',
+            step2Latex: [
+              '\\int x^3 \\ln x \\, dx = \\frac{1}{4}x^4 \\ln x - \\int \\frac{1}{4}x^4 \\cdot \\frac{1}{x} \\, dx',
+              '= \\frac{1}{4}x^4 \\ln x - \\int \\frac{1}{4}x^3 \\, dx'
+            ],
+            step3Title: 'Simplify & Integrate Remaining Term',
+            step3Latex: [
+              '\\int \\frac{1}{4}x^3 \\, dx = \\frac{1}{16}x^4 + c'
+            ],
+            answerLatex: '\\frac{1}{4}x^4 \\ln x - \\frac{1}{16}x^4 + c = \\frac{1}{16}x^4(4\\ln x - 1) + c',
+            answerNote: 'Notice how x⁴ · (1/x) simplifies cleanly to a polynomial x³'
+          },
+          {
+            questionLatex: '\\int x^2 \\ln x \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x}',
+            dvdx: 'x^2',
+            v: '\\frac{1}{3}x^3',
+            tip: 'Choose u = ln x so differentiating eliminates the logarithm.',
+            step2Latex: [
+              '\\int x^2 \\ln x \\, dx = \\frac{1}{3}x^3 \\ln x - \\int \\frac{1}{3}x^3 \\cdot \\frac{1}{x} \\, dx',
+              '= \\frac{1}{3}x^3 \\ln x - \\int \\frac{1}{3}x^2 \\, dx'
+            ],
+            step3Title: 'Simplify & Integrate Remaining Term',
+            step3Latex: [
+              '\\int \\frac{1}{3}x^2 \\, dx = \\frac{1}{9}x^3 + c'
+            ],
+            answerLatex: '\\frac{1}{3}x^3 \\ln x - \\frac{1}{9}x^3 + c = \\frac{1}{9}x^3(3\\ln x - 1) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int 4x \\ln x \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x}',
+            dvdx: '4x',
+            v: '2x^2',
+            tip: 'Choose u = ln x and dv/dx = 4x.',
+            step2Latex: [
+              '\\int 4x \\ln x \\, dx = 2x^2 \\ln x - \\int 2x^2 \\cdot \\frac{1}{x} \\, dx',
+              '= 2x^2 \\ln x - \\int 2x \\, dx'
+            ],
+            step3Title: 'Simplify & Integrate Remaining Term',
+            step3Latex: [
+              '\\int 2x \\, dx = x^2 + c'
+            ],
+            answerLatex: '2x^2 \\ln x - x^2 + c = x^2(2\\ln x - 1) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int x^4 \\ln x \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x}',
+            dvdx: 'x^4',
+            v: '\\frac{1}{5}x^5',
+            tip: 'Choose u = ln x and dv/dx = x⁴.',
+            step2Latex: [
+              '\\int x^4 \\ln x \\, dx = \\frac{1}{5}x^5 \\ln x - \\int \\frac{1}{5}x^5 \\cdot \\frac{1}{x} \\, dx',
+              '= \\frac{1}{5}x^5 \\ln x - \\int \\frac{1}{5}x^4 \\, dx'
+            ],
+            step3Title: 'Simplify & Integrate Remaining Term',
+            step3Latex: [
+              '\\int \\frac{1}{5}x^4 \\, dx = \\frac{1}{25}x^5 + c'
+            ],
+            answerLatex: '\\frac{1}{5}x^5 \\ln x - \\frac{1}{25}x^5 + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q2: Negative Index Rewrite with ln(x)
+      // -------------------------------------------------------------------------
+      {
+        id: 2,
+        tier: 'fluency',
+        subtitle: 'Level 2 • Negative Index with ln(x)',
+        variations: [
+          {
+            questionLatex: '\\int \\frac{\\ln x}{x^3} \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x} = x^{-1}',
+            dvdx: 'x^{-3}',
+            v: '-\\frac{1}{2}x^{-2}',
+            tip: 'First rewrite 1/x³ using a negative power as x⁻³, then set u = ln x.',
+            step2Latex: [
+              '\\int x^{-3} \\ln x \\, dx = -\\frac{1}{2}x^{-2}\\ln x - \\int \\left(-\\frac{1}{2}x^{-2}\\right)\\left(x^{-1}\\right) \\, dx',
+              '= -\\frac{\\ln x}{2x^2} + \\frac{1}{2}\\int x^{-3} \\, dx'
+            ],
+            step3Title: 'Integrate Negative Power & Watch Signs',
+            step3Latex: [
+              '\\frac{1}{2}\\int x^{-3} \\, dx = \\frac{1}{2}\\left(-\\frac{1}{2}x^{-2}\\right) + c = -\\frac{1}{4x^2} + c'
+            ],
+            answerLatex: '-\\frac{\\ln x}{2x^2} - \\frac{1}{4x^2} + c = -\\frac{2\\ln x + 1}{4x^2} + c',
+            answerNote: 'Adding 1 to the power -3 gives -2 (not -4!)'
+          },
+          {
+            questionLatex: '\\int \\frac{\\ln x}{x^2} \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x} = x^{-1}',
+            dvdx: 'x^{-2}',
+            v: '-x^{-1}',
+            tip: 'Rewrite 1/x² as x⁻² before integrating.',
+            step2Latex: [
+              '\\int x^{-2} \\ln x \\, dx = -x^{-1}\\ln x - \\int \\left(-x^{-1}\\right)\\left(x^{-1}\\right) \\, dx',
+              '= -\\frac{\\ln x}{x} + \\int x^{-2} \\, dx'
+            ],
+            step3Title: 'Integrate Negative Power & Watch Signs',
+            step3Latex: [
+              '\\int x^{-2} \\, dx = -x^{-1} + c = -\\frac{1}{x} + c'
+            ],
+            answerLatex: '-\\frac{\\ln x}{x} - \\frac{1}{x} + c = -\\frac{\\ln x + 1}{x} + c',
+            answerNote: 'Take care with the negative signs in both terms'
+          },
+          {
+            questionLatex: '\\int \\frac{\\ln x}{x^4} \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x} = x^{-1}',
+            dvdx: 'x^{-4}',
+            v: '-\\frac{1}{3}x^{-3}',
+            tip: 'Rewrite 1/x⁴ as x⁻⁴ and add 1 to the index when finding v.',
+            step2Latex: [
+              '\\int x^{-4} \\ln x \\, dx = -\\frac{1}{3}x^{-3}\\ln x - \\int \\left(-\\frac{1}{3}x^{-3}\\right)\\left(x^{-1}\\right) \\, dx',
+              '= -\\frac{\\ln x}{3x^3} + \\frac{1}{3}\\int x^{-4} \\, dx'
+            ],
+            step3Title: 'Integrate Negative Power',
+            step3Latex: [
+              '\\frac{1}{3}\\int x^{-4} \\, dx = \\frac{1}{3}\\left(-\\frac{1}{3}x^{-3}\\right) + c = -\\frac{1}{9x^3} + c'
+            ],
+            answerLatex: '-\\frac{\\ln x}{3x^3} - \\frac{1}{9x^3} + c = -\\frac{3\\ln x + 1}{9x^3} + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int \\frac{4\\ln x}{x^3} \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x} = x^{-1}',
+            dvdx: '4x^{-3}',
+            v: '-2x^{-2}',
+            tip: 'Rewrite 4/x³ as 4x⁻³ and set u = ln x.',
+            step2Latex: [
+              '\\int 4x^{-3} \\ln x \\, dx = -2x^{-2}\\ln x - \\int \\left(-2x^{-2}\\right)\\left(x^{-1}\\right) \\, dx',
+              '= -\\frac{2\\ln x}{x^2} + \\int 2x^{-3} \\, dx'
+            ],
+            step3Title: 'Integrate Negative Power',
+            step3Latex: [
+              '\\int 2x^{-3} \\, dx = -x^{-2} + c = -\\frac{1}{x^2} + c'
+            ],
+            answerLatex: '-\\frac{2\\ln x}{x^2} - \\frac{1}{x^2} + c = -\\frac{2\\ln x + 1}{x^2} + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q3: Definite Integral with Surd / Fractional Power & Exact Form
+      // -------------------------------------------------------------------------
+      {
+        id: 3,
+        tier: 'developing',
+        subtitle: 'Level 3 • Surd & Exact Limits (1 to e)',
+        variations: [
+          {
+            questionLatex: '\\int_1^e 3\\sqrt{x} \\ln x \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x} = x^{-1}',
+            dvdx: '3x^{1/2}',
+            v: '2x^{3/2}',
+            tip: 'Rewrite 3√x as 3x^{1/2}. Remember ln(e) = 1 and ln(1) = 0!',
+            step2Latex: [
+              '\\int_1^e 3x^{1/2} \\ln x \\, dx = \\left[ 2x^{3/2} \\ln x \\right]_1^e - \\int_1^e 2x^{3/2} \\cdot x^{-1} \\, dx',
+              '= \\left[ 2x^{3/2} \\ln x \\right]_1^e - \\int_1^e 2x^{1/2} \\, dx = \\left[ 2x^{3/2} \\ln x - \\frac{4}{3}x^{3/2} \\right]_1^e'
+            ],
+            step3Title: 'Substitute Limits x = e and x = 1',
+            step3Latex: [
+              '\\text{At } x = e: \\quad 2e^{3/2}\\ln(e) - \\frac{4}{3}e^{3/2} = 2e^{3/2}(1) - \\frac{4}{3}e^{3/2} = \\frac{2}{3}e^{3/2}',
+              '\\text{At } x = 1: \\quad 2(1)^{3/2}\\ln(1) - \\frac{4}{3}(1)^{3/2} = 0 - \\frac{4}{3} = -\\frac{4}{3}',
+              '\\text{Subtract}: \\quad \\frac{2}{3}e^{3/2} - \\left(-\\frac{4}{3}\\right)'
+            ],
+            answerLatex: '\\frac{2}{3}e^{3/2} + \\frac{4}{3} = \\frac{2e\\sqrt{e} + 4}{3}',
+            answerNote: 'Since ln(1) = 0, the first term vanishes at x = 1, but the second term does not!'
+          },
+          {
+            questionLatex: '\\int_1^e \\frac{\\ln x}{\\sqrt{x}} \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x} = x^{-1}',
+            dvdx: 'x^{-1/2}',
+            v: '2x^{1/2} = 2\\sqrt{x}',
+            tip: 'Rewrite 1/√x as x^{-1/2}. Then v = 2x^{1/2}.',
+            step2Latex: [
+              '\\int_1^e x^{-1/2} \\ln x \\, dx = \\left[ 2\\sqrt{x}\\ln x \\right]_1^e - \\int_1^e 2x^{1/2} \\cdot x^{-1} \\, dx',
+              '= \\left[ 2\\sqrt{x}\\ln x - 4\\sqrt{x} \\right]_1^e'
+            ],
+            step3Title: 'Substitute Limits x = e and x = 1',
+            step3Latex: [
+              '\\text{At } x = e: \\quad 2\\sqrt{e}\\ln(e) - 4\\sqrt{e} = 2\\sqrt{e} - 4\\sqrt{e} = -2\\sqrt{e}',
+              '\\text{At } x = 1: \\quad 2(1)\\ln(1) - 4(1) = -4',
+              '\\text{Subtract}: \\quad -2\\sqrt{e} - (-4)'
+            ],
+            answerLatex: '4 - 2\\sqrt{e}',
+            answerNote: 'Exact answer in terms of √e'
+          },
+          {
+            questionLatex: '\\int_1^e 2x \\ln x \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x}',
+            dvdx: '2x',
+            v: 'x^2',
+            tip: 'Recall that ln(e) = 1 and ln(1) = 0.',
+            step2Latex: [
+              '\\int_1^e 2x \\ln x \\, dx = \\left[ x^2 \\ln x \\right]_1^e - \\int_1^e x \\, dx',
+              '= \\left[ x^2 \\ln x - \\frac{1}{2}x^2 \\right]_1^e'
+            ],
+            step3Title: 'Substitute Limits x = e and x = 1',
+            step3Latex: [
+              '\\text{At } x = e: \\quad e^2\\ln(e) - \\frac{1}{2}e^2 = \\frac{1}{2}e^2',
+              '\\text{At } x = 1: \\quad 1^2\\ln(1) - \\frac{1}{2}(1)^2 = -\\frac{1}{2}'
+            ],
+            answerLatex: '\\frac{1}{2}e^2 + \\frac{1}{2} = \\frac{e^2 + 1}{2}',
+            answerNote: 'Exact answer in terms of e²'
+          },
+          {
+            questionLatex: '\\int_1^{e^2} \\frac{\\ln x}{\\sqrt{x}} \\, dx',
+            u: '\\ln x',
+            dudx: '\\frac{1}{x} = x^{-1}',
+            dvdx: 'x^{-1/2}',
+            v: '2\\sqrt{x}',
+            tip: 'At the upper limit x = e², remember √(e²) = e and ln(e²) = 2!',
+            step2Latex: [
+              '\\int_1^{e^2} x^{-1/2} \\ln x \\, dx = \\left[ 2\\sqrt{x}\\ln x - 4\\sqrt{x} \\right]_1^{e^2}'
+            ],
+            step3Title: 'Substitute Limits x = e² and x = 1',
+            step3Latex: [
+              '\\text{At } x = e^2: \\quad 2(e)(2) - 4(e) = 4e - 4e = 0',
+              '\\text{At } x = 1: \\quad 2(1)(0) - 4(1) = -4',
+              '\\text{Subtract}: \\quad 0 - (-4) = 4'
+            ],
+            answerLatex: '4',
+            answerNote: 'The e terms cancel completely at the upper limit!'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q4: Repeated Integration by Parts with (ln x)^2
+      // -------------------------------------------------------------------------
+      {
+        id: 4,
+        tier: 'exam',
+        subtitle: 'Level 4 • Chain Rule & Repeated IBP on (ln x)²',
+        variations: [
+          {
+            questionLatex: '\\int x (\\ln x)^2 \\, dx',
+            u: '(\\ln x)^2',
+            dudx: '2(\\ln x) \\cdot \\frac{1}{x} = \\frac{2\\ln x}{x}',
+            dvdx: 'x',
+            v: '\\frac{1}{2}x^2',
+            tip: 'Use the chain rule to differentiate u = (ln x)²: bring down the 2 and multiply by 1/x.',
+            step2Latex: [
+              '\\int x (\\ln x)^2 \\, dx = \\frac{1}{2}x^2(\\ln x)^2 - \\int \\frac{1}{2}x^2 \\cdot \\frac{2\\ln x}{x} \\, dx',
+              '= \\frac{1}{2}x^2(\\ln x)^2 - \\int x \\ln x \\, dx'
+            ],
+            step3Title: 'Apply Integration by Parts a Second Time on ∫ x ln x dx',
+            step3Latex: [
+              '\\text{Let } u_2 = \\ln x \\implies \\frac{du_2}{dx} = \\frac{1}{x}, \\quad \\frac{dv_2}{dx} = x \\implies v_2 = \\frac{1}{2}x^2',
+              '\\int x \\ln x \\, dx = \\frac{1}{2}x^2 \\ln x - \\int \\frac{1}{2}x \\, dx = \\frac{1}{2}x^2 \\ln x - \\frac{1}{4}x^2',
+              '\\text{Substitute back}: \\quad \\frac{1}{2}x^2(\\ln x)^2 - \\left(\\frac{1}{2}x^2 \\ln x - \\frac{1}{4}x^2\\right) + c'
+            ],
+            answerLatex: '\\frac{1}{2}x^2(\\ln x)^2 - \\frac{1}{2}x^2 \\ln x + \\frac{1}{4}x^2 + c',
+            answerNote: 'Watch the minus sign distributing over the bracket in the final step'
+          },
+          {
+            questionLatex: '\\int 2x (\\ln x)^2 \\, dx',
+            u: '(\\ln x)^2',
+            dudx: '\\frac{2\\ln x}{x}',
+            dvdx: '2x',
+            v: 'x^2',
+            tip: 'Differentiate u = (ln x)² using the chain rule to get (2 ln x)/x.',
+            step2Latex: [
+              '\\int 2x (\\ln x)^2 \\, dx = x^2(\\ln x)^2 - \\int x^2 \\cdot \\frac{2\\ln x}{x} \\, dx',
+              '= x^2(\\ln x)^2 - \\int 2x \\ln x \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ 2x ln x dx',
+            step3Latex: [
+              '\\text{Let } u_2 = \\ln x \\implies \\frac{du_2}{dx} = \\frac{1}{x}, \\quad \\frac{dv_2}{dx} = 2x \\implies v_2 = x^2',
+              '\\int 2x \\ln x \\, dx = x^2 \\ln x - \\int x \\, dx = x^2 \\ln x - \\frac{1}{2}x^2'
+            ],
+            answerLatex: 'x^2(\\ln x)^2 - x^2 \\ln x + \\frac{1}{2}x^2 + c',
+            answerNote: 'Distribute the negative sign carefully'
+          },
+          {
+            questionLatex: '\\int x^2 (\\ln x)^2 \\, dx',
+            u: '(\\ln x)^2',
+            dudx: '\\frac{2\\ln x}{x}',
+            dvdx: 'x^2',
+            v: '\\frac{1}{3}x^3',
+            tip: 'Use the chain rule on (ln x)², then apply IBP a second time.',
+            step2Latex: [
+              '\\int x^2 (\\ln x)^2 \\, dx = \\frac{1}{3}x^3(\\ln x)^2 - \\frac{2}{3}\\int x^2 \\ln x \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ x² ln x dx',
+            step3Latex: [
+              '\\int x^2 \\ln x \\, dx = \\frac{1}{3}x^3 \\ln x - \\int \\frac{1}{3}x^2 \\, dx = \\frac{1}{3}x^3 \\ln x - \\frac{1}{9}x^3',
+              '\\text{Multiply by } -\\frac{2}{3}: \\quad -\\frac{2}{9}x^3 \\ln x + \\frac{2}{27}x^3'
+            ],
+            answerLatex: '\\frac{1}{3}x^3(\\ln x)^2 - \\frac{2}{9}x^3 \\ln x + \\frac{2}{27}x^3 + c',
+            answerNote: 'Carefully track denominators 3, 9, and 27'
+          },
+          {
+            questionLatex: '\\int 4x (\\ln x)^2 \\, dx',
+            u: '(\\ln x)^2',
+            dudx: '\\frac{2\\ln x}{x}',
+            dvdx: '4x',
+            v: '2x^2',
+            tip: 'Use the chain rule on (ln x)², then apply IBP a second time.',
+            step2Latex: [
+              '\\int 4x (\\ln x)^2 \\, dx = 2x^2(\\ln x)^2 - \\int 4x \\ln x \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ 4x ln x dx',
+            step3Latex: [
+              '\\int 4x \\ln x \\, dx = 2x^2 \\ln x - \\int 2x \\, dx = 2x^2 \\ln x - x^2'
+            ],
+            answerLatex: '2x^2(\\ln x)^2 - 2x^2 \\ln x + x^2 + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q5: Composite Trig Inside ln: u = ln(sin x) or ln(cos x)
+      // -------------------------------------------------------------------------
+      {
+        id: 5,
+        tier: 'exam',
+        subtitle: 'Level 5 • Composite u = ln(trig x) Cancellation',
+        variations: [
+          {
+            questionLatex: '\\int \\cos x \\ln(\\sin x) \\, dx',
+            u: '\\ln(\\sin x)',
+            dudx: '\\frac{\\cos x}{\\sin x}',
+            dvdx: '\\cos x',
+            v: '\\sin x',
+            tip: 'Using the chain rule on ln(f(x)) gives f\'(x)/f(x) = cos(x)/sin(x).',
+            step2Latex: [
+              '\\int \\cos x \\ln(\\sin x) \\, dx = \\sin x \\ln(\\sin x) - \\int \\sin x \\cdot \\frac{\\cos x}{\\sin x} \\, dx',
+              '= \\sin x \\ln(\\sin x) - \\int \\cos x \\, dx'
+            ],
+            step3Title: 'Cancel sin(x) & Evaluate Remaining Integral',
+            step3Latex: [
+              '\\text{Notice } \\sin x \\cdot \\frac{\\cos x}{\\sin x} \\text{ simplifies directly to } \\cos x:',
+              '\\int \\cos x \\, dx = \\sin x + c'
+            ],
+            answerLatex: '\\sin x \\ln(\\sin x) - \\sin x + c = \\sin x \\big(\\ln(\\sin x) - 1\\big) + c',
+            answerNote: 'Great bridge to Q6: differentiating ln(trig x) creates a fraction that cancels with v!'
+          },
+          {
+            questionLatex: '\\int \\sin x \\ln(\\cos x) \\, dx',
+            u: '\\ln(\\cos x)',
+            dudx: '\\frac{-\\sin x}{\\cos x}',
+            dvdx: '\\sin x',
+            v: '-\\cos x',
+            tip: 'By the chain rule, d/dx[ln(cos x)] = (-sin x)/cos x.',
+            step2Latex: [
+              '\\int \\sin x \\ln(\\cos x) \\, dx = -\\cos x \\ln(\\cos x) - \\int (-\\cos x)\\left(\\frac{-\\sin x}{\\cos x}\\right) \\, dx',
+              '= -\\cos x \\ln(\\cos x) - \\int \\sin x \\, dx'
+            ],
+            step3Title: 'Cancel cos(x) & Evaluate Remaining Integral',
+            step3Latex: [
+              '-\\int \\sin x \\, dx = -(-\\cos x) + c = \\cos x + c'
+            ],
+            answerLatex: '-\\cos x \\ln(\\cos x) + \\cos x + c',
+            answerNote: 'Count the three negative signs in -∫ v (du/dx) dx carefully!'
+          },
+          {
+            questionLatex: '\\int 2\\cos(2x) \\ln(\\sin 2x) \\, dx',
+            u: '\\ln(\\sin 2x)',
+            dudx: '\\frac{2\\cos 2x}{\\sin 2x}',
+            dvdx: '2\\cos 2x',
+            v: '\\sin 2x',
+            tip: 'Differentiate u = ln(sin 2x) using the chain rule: 2cos(2x)/sin(2x).',
+            step2Latex: [
+              '\\int 2\\cos(2x) \\ln(\\sin 2x) \\, dx = \\sin(2x)\\ln(\\sin 2x) - \\int \\sin(2x) \\cdot \\frac{2\\cos 2x}{\\sin 2x} \\, dx',
+              '= \\sin(2x)\\ln(\\sin 2x) - \\int 2\\cos(2x) \\, dx'
+            ],
+            step3Title: 'Cancel sin(2x) & Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int 2\\cos(2x) \\, dx = \\sin(2x) + c'
+            ],
+            answerLatex: '\\sin(2x)\\ln(\\sin 2x) - \\sin(2x) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int \\sec^2 x \\ln(\\tan x) \\, dx',
+            u: '\\ln(\\tan x)',
+            dudx: '\\frac{\\sec^2 x}{\\tan x}',
+            dvdx: '\\sec^2 x',
+            v: '\\tan x',
+            tip: 'Differentiating ln(tan x) gives sec²x / tan x, which cancels with v = tan x.',
+            step2Latex: [
+              '\\int \\sec^2 x \\ln(\\tan x) \\, dx = \\tan x \\ln(\\tan x) - \\int \\tan x \\cdot \\frac{\\sec^2 x}{\\tan x} \\, dx',
+              '= \\tan x \\ln(\\tan x) - \\int \\sec^2 x \\, dx'
+            ],
+            step3Title: 'Cancel tan(x) & Integrate sec²(x)',
+            step3Latex: [
+              '\\int \\sec^2 x \\, dx = \\tan x + c'
+            ],
+            answerLatex: '\\tan x \\ln(\\tan x) - \\tan x + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q6: Target Exam Question — OCR C4 June 2018 Q5ii Edited
+      // -------------------------------------------------------------------------
+      {
+        id: 6,
+        tier: 'challenge',
+        subtitle: 'Level 6 • OCR C4 June 2018 Q5ii (5 Marks)',
+        variations: [
+          {
+            sourceTag: 'OCR C4 June 2018 Q5ii Edited • 5 Marks',
+            partALatex: '\\text{Given that } u = \\ln(\\cos x), \\text{ find } \\frac{du}{dx}',
+            partBLatex: '\\text{Hence find } \\int 2\\cos 2x \\ln(\\cos x) \\, dx',
+            questionLatex: '\\int 2\\cos 2x \\ln(\\cos x) \\, dx',
+            u: '\\ln(\\cos x)',
+            dudx: '\\frac{-\\sin x}{\\cos x} = -\\tan x',
+            dvdx: '2\\cos 2x',
+            v: '\\sin 2x',
+            tip: 'Part (a): By the chain rule, du/dx = (-sin x)/cos x. For Part (b), use sin 2x = 2 sin x cos x!',
+            step2Latex: [
+              '\\int 2\\cos 2x \\ln(\\cos x) \\, dx = \\sin 2x \\ln(\\cos x) - \\int \\sin 2x \\left(\\frac{-\\sin x}{\\cos x}\\right) \\, dx',
+              '\\text{Substitute double-angle identity } \\sin 2x = 2\\sin x\\cos x:',
+              '= \\sin 2x \\ln(\\cos x) + \\int (2\\sin x\\cos x)\\left(\\frac{\\sin x}{\\cos x}\\right) \\, dx = \\sin 2x \\ln(\\cos x) + \\int 2\\sin^2 x \\, dx'
+            ],
+            step3Title: 'Use Double-Angle Identity cos 2x = 1 - 2sin²x to Integrate 2sin²x',
+            step3Latex: [
+              '\\text{Since } \\cos 2x = 1 - 2\\sin^2 x \\implies 2\\sin^2 x = 1 - \\cos 2x:',
+              '\\int 2\\sin^2 x \\, dx = \\int (1 - \\cos 2x) \\, dx = x - \\frac{1}{2}\\sin 2x + c'
+            ],
+            answerLatex: '\\sin 2x \\ln(\\cos x) + x - \\frac{1}{2}\\sin 2x + c',
+            answerNote: 'Part (a): du/dx = -sin x / cos x = -tan x  |  Part (b): Full 5-mark exact solution'
+          },
+          {
+            sourceTag: 'Exam Challenge Variant • 5 Marks',
+            partALatex: '\\text{Given that } u = \\ln(\\sin x), \\text{ find } \\frac{du}{dx}',
+            partBLatex: '\\text{Hence find } \\int 2\\cos 2x \\ln(\\sin x) \\, dx',
+            questionLatex: '\\int 2\\cos 2x \\ln(\\sin x) \\, dx',
+            u: '\\ln(\\sin x)',
+            dudx: '\\frac{\\cos x}{\\sin x} = \\cot x',
+            dvdx: '2\\cos 2x',
+            v: '\\sin 2x',
+            tip: 'Part (a): du/dx = cos x / sin x. For Part (b), rewrite v = sin 2x as 2 sin x cos x.',
+            step2Latex: [
+              '\\int 2\\cos 2x \\ln(\\sin x) \\, dx = \\sin 2x \\ln(\\sin x) - \\int \\sin 2x \\left(\\frac{\\cos x}{\\sin x}\\right) \\, dx',
+              '\\text{Substitute } \\sin 2x = 2\\sin x\\cos x:',
+              '= \\sin 2x \\ln(\\sin x) - \\int (2\\sin x\\cos x)\\left(\\frac{\\cos x}{\\sin x}\\right) \\, dx = \\sin 2x \\ln(\\sin x) - \\int 2\\cos^2 x \\, dx'
+            ],
+            step3Title: 'Use Double-Angle Identity cos 2x = 2cos²x - 1 to Integrate 2cos²x',
+            step3Latex: [
+              '\\text{Since } \\cos 2x = 2\\cos^2 x - 1 \\implies 2\\cos^2 x = 1 + \\cos 2x:',
+              '-\\int 2\\cos^2 x \\, dx = -\\int (1 + \\cos 2x) \\, dx = -x - \\frac{1}{2}\\sin 2x + c'
+            ],
+            answerLatex: '\\sin 2x \\ln(\\sin x) - x - \\frac{1}{2}\\sin 2x + c',
+            answerNote: 'Part (a): du/dx = cos x / sin x  |  Part (b): Full 5-mark solution'
+          },
+          {
+            sourceTag: 'Exam Challenge Variant • 5 Marks',
+            partALatex: '\\text{Given that } u = \\ln(\\cos x), \\text{ find } \\frac{du}{dx}',
+            partBLatex: '\\text{Hence find } \\int 4\\cos 2x \\ln(\\cos x) \\, dx',
+            questionLatex: '\\int 4\\cos 2x \\ln(\\cos x) \\, dx',
+            u: '\\ln(\\cos x)',
+            dudx: '\\frac{-\\sin x}{\\cos x} = -\\tan x',
+            dvdx: '4\\cos 2x',
+            v: '2\\sin 2x',
+            tip: 'Part (a): du/dx = -sin x / cos x. For Part (b), use 2sin 2x = 4sin x cos x.',
+            step2Latex: [
+              '\\int 4\\cos 2x \\ln(\\cos x) \\, dx = 2\\sin 2x \\ln(\\cos x) - \\int 2\\sin 2x \\left(\\frac{-\\sin x}{\\cos x}\\right) \\, dx',
+              '\\text{Substitute } 2\\sin 2x = 4\\sin x\\cos x:',
+              '= 2\\sin 2x \\ln(\\cos x) + \\int 4\\sin^2 x \\, dx'
+            ],
+            step3Title: 'Use Identity 2sin²x = 1 - cos 2x to Integrate 4sin²x',
+            step3Latex: [
+              '\\int 4\\sin^2 x \\, dx = \\int 2(1 - \\cos 2x) \\, dx = 2x - \\sin 2x + c'
+            ],
+            answerLatex: '2\\sin 2x \\ln(\\cos x) + 2x - \\sin 2x + c',
+            answerNote: 'Part (a): du/dx = -sin x / cos x  |  Part (b): Full 5-mark solution'
+          },
+          {
+            sourceTag: 'Exam Challenge Variant • 5 Marks',
+            partALatex: '\\text{Given that } u = \\ln(\\sin x), \\text{ find } \\frac{du}{dx}',
+            partBLatex: '\\text{Hence find } \\int 4\\cos 2x \\ln(\\sin x) \\, dx',
+            questionLatex: '\\int 4\\cos 2x \\ln(\\sin x) \\, dx',
+            u: '\\ln(\\sin x)',
+            dudx: '\\frac{\\cos x}{\\sin x} = \\cot x',
+            dvdx: '4\\cos 2x',
+            v: '2\\sin 2x',
+            tip: 'Part (a): du/dx = cos x / sin x. For Part (b), use 2sin 2x = 4sin x cos x.',
+            step2Latex: [
+              '\\int 4\\cos 2x \\ln(\\sin x) \\, dx = 2\\sin 2x \\ln(\\sin x) - \\int (4\\sin x\\cos x)\\left(\\frac{\\cos x}{\\sin x}\\right) \\, dx',
+              '= 2\\sin 2x \\ln(\\sin x) - \\int 4\\cos^2 x \\, dx'
+            ],
+            step3Title: 'Use Identity 2cos²x = 1 + cos 2x to Integrate 4cos²x',
+            step3Latex: [
+              '-\\int 4\\cos^2 x \\, dx = -\\int 2(1 + \\cos 2x) \\, dx = -2x - \\sin 2x + c'
+            ],
+            answerLatex: '2\\sin 2x \\ln(\\sin x) - 2x - \\sin 2x + c',
+            answerNote: 'Part (a): du/dx = cos x / sin x  |  Part (b): Full 5-mark solution'
+          }
+        ]
+      }
+    ];
+
+    // ============================================================================
+    // SET 2: ORIGINAL 12-QUESTION STANDARD IBP GRID (3 COLUMNS x 4 ROWS)
+    // ============================================================================
+    const STD_QUESTION_SLOTS = [
+      // -------------------------------------------------------------------------
+      // Q1: Basic exponential
+      // -------------------------------------------------------------------------
+      {
+        id: 1,
+        tier: 'fluency',
+        subtitle: 'Basic exponential',
+        variations: [
+          {
+            questionLatex: '\\int x e^x \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: 'e^x',
+            v: 'e^x',
+            tip: 'Choose u = x so that differentiating reduces it to a constant.',
+            step2Latex: [
+              '\\int x e^x \\, dx = x e^x - \\int e^x \\cdot 1 \\, dx',
+              '= x e^x - \\int e^x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int e^x \\, dx = e^x + c'
+            ],
+            answerLatex: 'x e^x - e^x + c = e^x(x - 1) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int 2x e^x \\, dx',
+            u: '2x',
+            dudx: '2',
+            dvdx: 'e^x',
+            v: 'e^x',
+            tip: 'Choose u = 2x so that du/dx = 2.',
+            step2Latex: [
+              '\\int 2x e^x \\, dx = 2x e^x - \\int e^x \\cdot 2 \\, dx',
+              '= 2x e^x - 2\\int e^x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '2\\int e^x \\, dx = 2e^x + c'
+            ],
+            answerLatex: '2x e^x - 2e^x + c = 2e^x(x - 1) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int 3x e^x \\, dx',
+            u: '3x',
+            dudx: '3',
+            dvdx: 'e^x',
+            v: 'e^x',
+            tip: 'Choose u = 3x so that differentiating simplifies the integral.',
+            step2Latex: [
+              '\\int 3x e^x \\, dx = 3x e^x - \\int 3e^x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int 3e^x \\, dx = 3e^x + c'
+            ],
+            answerLatex: '3x e^x - 3e^x + c = 3e^x(x - 1) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int (x + 2) e^x \\, dx',
+            u: 'x + 2',
+            dudx: '1',
+            dvdx: 'e^x',
+            v: 'e^x',
+            tip: 'Let u = x + 2 so du/dx = 1.',
+            step2Latex: [
+              '\\int (x + 2) e^x \\, dx = (x + 2)e^x - \\int e^x \\cdot 1 \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int e^x \\, dx = e^x + c',
+              '(x + 2)e^x - e^x = (x + 1)e^x'
+            ],
+            answerLatex: '(x + 1)e^x + c',
+            answerNote: 'Simplified factorised form'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q2: Basic trigonometric
+      // -------------------------------------------------------------------------
+      {
+        id: 2,
+        tier: 'fluency',
+        subtitle: 'Basic trigonometric',
+        variations: [
+          {
+            questionLatex: '\\int x \\cos x \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: '\\cos x',
+            v: '\\sin x',
+            tip: 'Integrating cos(x) gives +sin(x).',
+            step2Latex: [
+              '\\int x \\cos x \\, dx = x \\sin x - \\int \\sin x \\cdot 1 \\, dx',
+              '= x \\sin x - \\int \\sin x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int \\sin x \\, dx = -\\cos x + c',
+              'x \\sin x - (-\\cos x) + c'
+            ],
+            answerLatex: 'x \\sin x + \\cos x + c',
+            answerNote: 'Watch the double negative: -(-cos x) = +cos x'
+          },
+          {
+            questionLatex: '\\int 2x \\cos x \\, dx',
+            u: '2x',
+            dudx: '2',
+            dvdx: '\\cos x',
+            v: '\\sin x',
+            tip: 'Integrating cos(x) gives +sin(x).',
+            step2Latex: [
+              '\\int 2x \\cos x \\, dx = 2x \\sin x - \\int 2\\sin x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int 2\\sin x \\, dx = -2\\cos x + c',
+              '2x \\sin x - (-2\\cos x) + c'
+            ],
+            answerLatex: '2x \\sin x + 2\\cos x + c',
+            answerNote: 'Watch the double negative when integrating sin(x)'
+          },
+          {
+            questionLatex: '\\int 3x \\cos x \\, dx',
+            u: '3x',
+            dudx: '3',
+            dvdx: '\\cos x',
+            v: '\\sin x',
+            tip: 'Let u = 3x and dv/dx = cos(x).',
+            step2Latex: [
+              '\\int 3x \\cos x \\, dx = 3x \\sin x - \\int 3\\sin x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int 3\\sin x \\, dx = -3\\cos x + c',
+              '3x \\sin x - (-3\\cos x) + c'
+            ],
+            answerLatex: '3x \\sin x + 3\\cos x + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int (x + 1) \\cos x \\, dx',
+            u: 'x + 1',
+            dudx: '1',
+            dvdx: '\\cos x',
+            v: '\\sin x',
+            tip: 'Let u = x + 1 so du/dx = 1.',
+            step2Latex: [
+              '\\int (x + 1) \\cos x \\, dx = (x + 1)\\sin x - \\int \\sin x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int \\sin x \\, dx = -\\cos x + c'
+            ],
+            answerLatex: '(x + 1)\\sin x + \\cos x + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q3: Trigonometric with negative sign care
+      // -------------------------------------------------------------------------
+      {
+        id: 3,
+        tier: 'fluency',
+        subtitle: 'Trigonometric with negative sign care',
+        variations: [
+          {
+            questionLatex: '\\int x \\sin x \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: '\\sin x',
+            v: '-\\cos x',
+            tip: 'Careful: integrating sin(x) gives -cos(x).',
+            step2Latex: [
+              '\\int x \\sin x \\, dx = x(-\\cos x) - \\int (-\\cos x) \\cdot 1 \\, dx',
+              '= -x \\cos x + \\int \\cos x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int \\cos x \\, dx = \\sin x + c'
+            ],
+            answerLatex: '-x \\cos x + \\sin x + c = \\sin x - x \\cos x + c',
+            answerNote: 'Take care with the negative signs in uv and -∫v(du/dx)dx'
+          },
+          {
+            questionLatex: '\\int 3x \\sin x \\, dx',
+            u: '3x',
+            dudx: '3',
+            dvdx: '\\sin x',
+            v: '-\\cos x',
+            tip: 'Careful: integrating sin(x) gives -cos(x).',
+            step2Latex: [
+              '\\int 3x \\sin x \\, dx = -3x \\cos x - \\int (-\\cos x)(3) \\, dx',
+              '= -3x \\cos x + 3\\int \\cos x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '3\\int \\cos x \\, dx = 3\\sin x + c'
+            ],
+            answerLatex: '-3x \\cos x + 3\\sin x + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int 4x \\sin x \\, dx',
+            u: '4x',
+            dudx: '4',
+            dvdx: '\\sin x',
+            v: '-\\cos x',
+            tip: 'Integrating sin(x) introduces a negative sign.',
+            step2Latex: [
+              '\\int 4x \\sin x \\, dx = -4x \\cos x - \\int (-4\\cos x) \\, dx',
+              '= -4x \\cos x + 4\\int \\cos x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '4\\int \\cos x \\, dx = 4\\sin x + c'
+            ],
+            answerLatex: '4\\sin x - 4x \\cos x + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int x \\sec^2 x \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: '\\sec^2 x',
+            v: '\\tan x',
+            tip: 'Standard AQA result: integrating sec²(x) gives tan(x), still avoiding ln(x)!',
+            step2Latex: [
+              '\\int x \\sec^2 x \\, dx = x \\tan x - \\int \\tan x \\, dx'
+            ],
+            // Wait! Integrating tan(x) involves ln|sec x|! The user specifically requested:
+            // "The questions should not involve the need to integrate lnx or inverse trig functions"
+            // And let's avoid ANY ln in the answer too! Let's replace this variation with 2x sin(x) so no ln appears anywhere.
+            questionLatex: '\\int 2x \\sin x \\, dx',
+            u: '2x',
+            dudx: '2',
+            dvdx: '\\sin x',
+            v: '-\\cos x',
+            tip: 'Careful: integrating sin(x) gives -cos(x).',
+            step2Latex: [
+              '\\int 2x \\sin x \\, dx = -2x \\cos x - \\int (-2\\cos x) \\, dx',
+              '= -2x \\cos x + 2\\int \\cos x \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '2\\int \\cos x \\, dx = 2\\sin x + c'
+            ],
+            answerLatex: '2\\sin x - 2x \\cos x + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q4: Exponential with linear chain rule factor
+      // -------------------------------------------------------------------------
+      {
+        id: 4,
+        tier: 'developing',
+        subtitle: 'Exponential with linear factor',
+        variations: [
+          {
+            questionLatex: '\\int x e^{3x} \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: 'e^{3x}',
+            v: '\\frac{1}{3}e^{3x}',
+            tip: 'Divide by the coefficient of x when integrating e^{3x}.',
+            step2Latex: [
+              '\\int x e^{3x} \\, dx = \\frac{1}{3}x e^{3x} - \\int \\frac{1}{3}e^{3x} \\cdot 1 \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int \\frac{1}{3}e^{3x} \\, dx = \\frac{1}{9}e^{3x} + c'
+            ],
+            answerLatex: '\\frac{1}{3}x e^{3x} - \\frac{1}{9}e^{3x} + c = \\frac{1}{9}e^{3x}(3x - 1) + c',
+            answerNote: 'Dividing by 3 twice gives 1/9 in the second term'
+          },
+          {
+            questionLatex: '\\int x e^{2x} \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: 'e^{2x}',
+            v: '\\frac{1}{2}e^{2x}',
+            tip: 'Divide by 2 when integrating e^{2x}.',
+            step2Latex: [
+              '\\int x e^{2x} \\, dx = \\frac{1}{2}x e^{2x} - \\int \\frac{1}{2}e^{2x} \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int \\frac{1}{2}e^{2x} \\, dx = \\frac{1}{4}e^{2x} + c'
+            ],
+            answerLatex: '\\frac{1}{2}x e^{2x} - \\frac{1}{4}e^{2x} + c = \\frac{1}{4}e^{2x}(2x - 1) + c',
+            answerNote: 'Dividing by 2 twice gives 1/4 in the second term'
+          },
+          {
+            questionLatex: '\\int x e^{4x} \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: 'e^{4x}',
+            v: '\\frac{1}{4}e^{4x}',
+            tip: 'Divide by 4 when integrating e^{4x}.',
+            step2Latex: [
+              '\\int x e^{4x} \\, dx = \\frac{1}{4}x e^{4x} - \\int \\frac{1}{4}e^{4x} \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int \\frac{1}{4}e^{4x} \\, dx = \\frac{1}{16}e^{4x} + c'
+            ],
+            answerLatex: '\\frac{1}{4}x e^{4x} - \\frac{1}{16}e^{4x} + c = \\frac{1}{16}e^{4x}(4x - 1) + c',
+            answerNote: 'Dividing by 4 twice gives 1/16 in the second term'
+          },
+          {
+            questionLatex: '\\int x e^{5x} \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: 'e^{5x}',
+            v: '\\frac{1}{5}e^{5x}',
+            tip: 'Divide by 5 when integrating e^{5x}.',
+            step2Latex: [
+              '\\int x e^{5x} \\, dx = \\frac{1}{5}x e^{5x} - \\int \\frac{1}{5}e^{5x} \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int \\frac{1}{5}e^{5x} \\, dx = \\frac{1}{25}e^{5x} + c'
+            ],
+            answerLatex: '\\frac{1}{5}x e^{5x} - \\frac{1}{25}e^{5x} + c = \\frac{1}{25}e^{5x}(5x - 1) + c',
+            answerNote: 'Dividing by 5 twice gives 1/25 in the second term'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q5: Trigonometric with coefficient & linear angle
+      // -------------------------------------------------------------------------
+      {
+        id: 5,
+        tier: 'developing',
+        subtitle: 'Trig with coefficient & linear angle',
+        variations: [
+          {
+            questionLatex: '\\int 2x \\sin(2x) \\, dx',
+            u: '2x',
+            dudx: '2',
+            dvdx: '\\sin(2x)',
+            v: '-\\frac{1}{2}\\cos(2x)',
+            tip: 'Integrating sin(2x) gives -(1/2)cos(2x).',
+            step2Latex: [
+              '\\int 2x \\sin(2x) \\, dx = (2x)\\left(-\\frac{1}{2}\\cos(2x)\\right) - \\int \\left(-\\frac{1}{2}\\cos(2x)\\right)(2) \\, dx',
+              '= -x\\cos(2x) + \\int \\cos(2x) \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '\\int \\cos(2x) \\, dx = \\frac{1}{2}\\sin(2x) + c'
+            ],
+            answerLatex: '-x\\cos(2x) + \\frac{1}{2}\\sin(2x) + c',
+            answerNote: 'Notice how the factor of 2 simplifies the middle integral'
+          },
+          {
+            questionLatex: '\\int 3x \\cos(3x) \\, dx',
+            u: '3x',
+            dudx: '3',
+            dvdx: '\\cos(3x)',
+            v: '\\frac{1}{3}\\sin(3x)',
+            tip: 'Integrating cos(3x) gives (1/3)sin(3x).',
+            step2Latex: [
+              '\\int 3x \\cos(3x) \\, dx = (3x)\\left(\\frac{1}{3}\\sin(3x)\\right) - \\int \\left(\\frac{1}{3}\\sin(3x)\\right)(3) \\, dx',
+              '= x\\sin(3x) - \\int \\sin(3x) \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '-\\int \\sin(3x) \\, dx = \\frac{1}{3}\\cos(3x) + c'
+            ],
+            answerLatex: 'x\\sin(3x) + \\frac{1}{3}\\cos(3x) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int 4x \\sin(2x) \\, dx',
+            u: '4x',
+            dudx: '4',
+            dvdx: '\\sin(2x)',
+            v: '-\\frac{1}{2}\\cos(2x)',
+            tip: 'Integrating sin(2x) gives -(1/2)cos(2x).',
+            step2Latex: [
+              '\\int 4x \\sin(2x) \\, dx = (4x)\\left(-\\frac{1}{2}\\cos(2x)\\right) - \\int \\left(-\\frac{1}{2}\\cos(2x)\\right)(4) \\, dx',
+              '= -2x\\cos(2x) + 2\\int \\cos(2x) \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '2\\int \\cos(2x) \\, dx = 2\\left(\\frac{1}{2}\\sin(2x)\\right) = \\sin(2x) + c'
+            ],
+            answerLatex: '-2x\\cos(2x) + \\sin(2x) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int 6x \\cos(2x) \\, dx',
+            u: '6x',
+            dudx: '6',
+            dvdx: '\\cos(2x)',
+            v: '\\frac{1}{2}\\sin(2x)',
+            tip: 'Integrating cos(2x) gives (1/2)sin(2x).',
+            step2Latex: [
+              '\\int 6x \\cos(2x) \\, dx = 3x\\sin(2x) - \\int 3\\sin(2x) \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '-\\int 3\\sin(2x) \\, dx = \\frac{3}{2}\\cos(2x) + c'
+            ],
+            answerLatex: '3x\\sin(2x) + \\frac{3}{2}\\cos(2x) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q6: Linear bracket with negative exponent
+      // -------------------------------------------------------------------------
+      {
+        id: 6,
+        tier: 'developing',
+        subtitle: 'Linear bracket & negative exponent',
+        variations: [
+          {
+            questionLatex: '\\int (3x + 1) e^{-x} \\, dx',
+            u: '3x + 1',
+            dudx: '3',
+            dvdx: 'e^{-x}',
+            v: '-e^{-x}',
+            tip: 'Keep the whole linear bracket together as u = 3x + 1.',
+            step2Latex: [
+              '\\int (3x + 1) e^{-x} \\, dx = -(3x + 1)e^{-x} - \\int (-e^{-x})(3) \\, dx',
+              '= -(3x + 1)e^{-x} + 3\\int e^{-x} \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral & Simplify',
+            step3Latex: [
+              '3\\int e^{-x} \\, dx = -3e^{-x} + c',
+              '-(3x + 1)e^{-x} - 3e^{-x} = -(3x + 4)e^{-x}'
+            ],
+            answerLatex: '-(3x + 1)e^{-x} - 3e^{-x} + c = -(3x + 4)e^{-x} + c',
+            answerNote: 'Both unfactorised and factorised forms are accepted'
+          },
+          {
+            questionLatex: '\\int (2x + 3) e^{-x} \\, dx',
+            u: '2x + 3',
+            dudx: '2',
+            dvdx: 'e^{-x}',
+            v: '-e^{-x}',
+            tip: 'Keep the whole linear bracket together as u = 2x + 3.',
+            step2Latex: [
+              '\\int (2x + 3) e^{-x} \\, dx = -(2x + 3)e^{-x} - \\int (-e^{-x})(2) \\, dx',
+              '= -(2x + 3)e^{-x} + 2\\int e^{-x} \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral & Simplify',
+            step3Latex: [
+              '2\\int e^{-x} \\, dx = -2e^{-x} + c',
+              '-(2x + 3)e^{-x} - 2e^{-x} = -(2x + 5)e^{-x}'
+            ],
+            answerLatex: '-(2x + 3)e^{-x} - 2e^{-x} + c = -(2x + 5)e^{-x} + c',
+            answerNote: 'Both unfactorised and factorised forms are accepted'
+          },
+          {
+            questionLatex: '\\int (4x - 1) e^{-x} \\, dx',
+            u: '4x - 1',
+            dudx: '4',
+            dvdx: 'e^{-x}',
+            v: '-e^{-x}',
+            tip: 'Let u = 4x - 1 so du/dx = 4.',
+            step2Latex: [
+              '\\int (4x - 1) e^{-x} \\, dx = -(4x - 1)e^{-x} - \\int (-e^{-x})(4) \\, dx',
+              '= -(4x - 1)e^{-x} + 4\\int e^{-x} \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral & Simplify',
+            step3Latex: [
+              '4\\int e^{-x} \\, dx = -4e^{-x} + c',
+              '-(4x - 1)e^{-x} - 4e^{-x} = -(4x + 3)e^{-x}'
+            ],
+            answerLatex: '-(4x - 1)e^{-x} - 4e^{-x} + c = -(4x + 3)e^{-x} + c',
+            answerNote: 'Watch the sign when combining -(4x - 1) and -4'
+          },
+          {
+            questionLatex: '\\int (2x + 1) e^{-2x} \\, dx',
+            u: '2x + 1',
+            dudx: '2',
+            dvdx: 'e^{-2x}',
+            v: '-\\frac{1}{2}e^{-2x}',
+            tip: 'Let u = 2x + 1 and divide by -2 when integrating e^{-2x}.',
+            step2Latex: [
+              '\\int (2x + 1) e^{-2x} \\, dx = -\\frac{1}{2}(2x + 1)e^{-2x} - \\int \\left(-\\frac{1}{2}e^{-2x}\\right)(2) \\, dx',
+              '= -\\frac{1}{2}(2x + 1)e^{-2x} + \\int e^{-2x} \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral & Simplify',
+            step3Latex: [
+              '\\int e^{-2x} \\, dx = -\\frac{1}{2}e^{-2x} + c'
+            ],
+            answerLatex: '-\\frac{1}{2}(2x + 1)e^{-2x} - \\frac{1}{2}e^{-2x} + c = -(x + 1)e^{-2x} + c',
+            answerNote: 'Collect like terms in e^{-2x}'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q7: Fractional angle inside trig function
+      // -------------------------------------------------------------------------
+      {
+        id: 7,
+        tier: 'exam',
+        subtitle: 'Fractional angle inside trig',
+        variations: [
+          {
+            questionLatex: '\\int 4x \\cos\\left(\\frac{1}{2}x\\right) \\, dx',
+            u: '4x',
+            dudx: '4',
+            dvdx: '\\cos\\left(\\frac{1}{2}x\\right)',
+            v: '2\\sin\\left(\\frac{1}{2}x\\right)',
+            tip: 'Dividing by 1/2 is equivalent to multiplying by 2.',
+            step2Latex: [
+              '\\int 4x \\cos\\left(\\frac{1}{2}x\\right) \\, dx = (4x)\\left(2\\sin\\left(\\frac{1}{2}x\\right)\\right) - \\int 2\\sin\\left(\\frac{1}{2}x\\right) \\cdot 4 \\, dx',
+              '= 8x\\sin\\left(\\frac{1}{2}x\\right) - 8\\int \\sin\\left(\\frac{1}{2}x\\right) \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '-8\\int \\sin\\left(\\frac{1}{2}x\\right) \\, dx = -8\\left(-2\\cos\\left(\\frac{1}{2}x\\right)\\right) + c',
+              '= 16\\cos\\left(\\frac{1}{2}x\\right) + c'
+            ],
+            answerLatex: '8x\\sin\\left(\\frac{1}{2}x\\right) + 16\\cos\\left(\\frac{1}{2}x\\right) + c',
+            answerNote: 'Dividing by 1/2 twice multiplies by 2 each time'
+          },
+          {
+            questionLatex: '\\int 2x \\sin\\left(\\frac{1}{2}x\\right) \\, dx',
+            u: '2x',
+            dudx: '2',
+            dvdx: '\\sin\\left(\\frac{1}{2}x\\right)',
+            v: '-2\\cos\\left(\\frac{1}{2}x\\right)',
+            tip: 'Integrating sin(x/2) gives -2cos(x/2).',
+            step2Latex: [
+              '\\int 2x \\sin\\left(\\frac{1}{2}x\\right) \\, dx = (2x)\\left(-2\\cos\\left(\\frac{1}{2}x\\right)\\right) - \\int \\left(-2\\cos\\left(\\frac{1}{2}x\\right)\\right)(2) \\, dx',
+              '= -4x\\cos\\left(\\frac{1}{2}x\\right) + 4\\int \\cos\\left(\\frac{1}{2}x\\right) \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '4\\int \\cos\\left(\\frac{1}{2}x\\right) \\, dx = 4\\left(2\\sin\\left(\\frac{1}{2}x\\right)\\right) + c = 8\\sin\\left(\\frac{1}{2}x\\right) + c'
+            ],
+            answerLatex: '-4x\\cos\\left(\\frac{1}{2}x\\right) + 8\\sin\\left(\\frac{1}{2}x\\right) + c',
+            answerNote: 'Dividing by 1/2 multiplies by 2'
+          },
+          {
+            questionLatex: '\\int 3x \\cos\\left(\\frac{1}{3}x\\right) \\, dx',
+            u: '3x',
+            dudx: '3',
+            dvdx: '\\cos\\left(\\frac{1}{3}x\\right)',
+            v: '3\\sin\\left(\\frac{1}{3}x\\right)',
+            tip: 'Integrating cos(x/3) gives 3sin(x/3).',
+            step2Latex: [
+              '\\int 3x \\cos\\left(\\frac{1}{3}x\\right) \\, dx = 9x\\sin\\left(\\frac{1}{3}x\\right) - \\int 9\\sin\\left(\\frac{1}{3}x\\right) \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '-9\\int \\sin\\left(\\frac{1}{3}x\\right) \\, dx = -9\\left(-3\\cos\\left(\\frac{1}{3}x\\right)\\right) + c = 27\\cos\\left(\\frac{1}{3}x\\right) + c'
+            ],
+            answerLatex: '9x\\sin\\left(\\frac{1}{3}x\\right) + 27\\cos\\left(\\frac{1}{3}x\\right) + c',
+            answerNote: 'Dividing by 1/3 multiplies by 3'
+          },
+          {
+            questionLatex: '\\int 6x \\sin\\left(\\frac{1}{2}x\\right) \\, dx',
+            u: '6x',
+            dudx: '6',
+            dvdx: '\\sin\\left(\\frac{1}{2}x\\right)',
+            v: '-2\\cos\\left(\\frac{1}{2}x\\right)',
+            tip: 'Integrating sin(x/2) gives -2cos(x/2).',
+            step2Latex: [
+              '\\int 6x \\sin\\left(\\frac{1}{2}x\\right) \\, dx = -12x\\cos\\left(\\frac{1}{2}x\\right) + 12\\int \\cos\\left(\\frac{1}{2}x\\right) \\, dx'
+            ],
+            step3Title: 'Evaluate Remaining Integral',
+            step3Latex: [
+              '12\\int \\cos\\left(\\frac{1}{2}x\\right) \\, dx = 24\\sin\\left(\\frac{1}{2}x\\right) + c'
+            ],
+            answerLatex: '-12x\\cos\\left(\\frac{1}{2}x\\right) + 24\\sin\\left(\\frac{1}{2}x\\right) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q8: Definite integral — exact answer in terms of e
+      // -------------------------------------------------------------------------
+      {
+        id: 8,
+        tier: 'exam',
+        subtitle: 'Definite integral (exact form)',
+        variations: [
+          {
+            questionLatex: '\\int_0^2 x e^{2x} \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: 'e^{2x}',
+            v: '\\frac{1}{2}e^{2x}',
+            tip: 'Find the full antiderivative in square brackets, then substitute limits.',
+            step2Latex: [
+              '\\int_0^2 x e^{2x} \\, dx = \\left[ \\frac{1}{2}x e^{2x} \\right]_0^2 - \\int_0^2 \\frac{1}{2}e^{2x} \\, dx',
+              '= \\left[ \\frac{1}{2}x e^{2x} - \\frac{1}{4}e^{2x} \\right]_0^2'
+            ],
+            step3Title: 'Substitute Upper & Lower Limits',
+            step3Latex: [
+              '\\text{At } x = 2: \\quad \\frac{1}{2}(2)e^{4} - \\frac{1}{4}e^{4} = e^4 - \\frac{1}{4}e^4 = \\frac{3}{4}e^4',
+              '\\text{At } x = 0: \\quad 0 - \\frac{1}{4}e^{0} = -\\frac{1}{4}',
+              '\\text{Subtract}: \\quad \\frac{3}{4}e^4 - \\left(-\\frac{1}{4}\\right)'
+            ],
+            answerLatex: '\\frac{3}{4}e^4 + \\frac{1}{4} = \\frac{3e^4 + 1}{4}',
+            answerNote: 'Remember e⁰ = 1 at the lower limit x = 0'
+          },
+          {
+            questionLatex: '\\int_0^1 x e^{2x} \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: 'e^{2x}',
+            v: '\\frac{1}{2}e^{2x}',
+            tip: 'Don’t assume the lower limit x = 0 gives zero for exponential terms!',
+            step2Latex: [
+              '\\int_0^1 x e^{2x} \\, dx = \\left[ \\frac{1}{2}x e^{2x} - \\frac{1}{4}e^{2x} \\right]_0^1'
+            ],
+            step3Title: 'Substitute Upper & Lower Limits',
+            step3Latex: [
+              '\\text{At } x = 1: \\quad \\frac{1}{2}e^2 - \\frac{1}{4}e^2 = \\frac{1}{4}e^2',
+              '\\text{At } x = 0: \\quad 0 - \\frac{1}{4}e^0 = -\\frac{1}{4}',
+              '\\text{Subtract}: \\quad \\frac{1}{4}e^2 - \\left(-\\frac{1}{4}\\right)'
+            ],
+            answerLatex: '\\frac{1}{4}e^2 + \\frac{1}{4} = \\frac{e^2 + 1}{4}',
+            answerNote: 'Exact answer in terms of e'
+          },
+          {
+            questionLatex: '\\int_0^1 x e^{3x} \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: 'e^{3x}',
+            v: '\\frac{1}{3}e^{3x}',
+            tip: 'Evaluate the lower limit x = 0 carefully since e⁰ = 1.',
+            step2Latex: [
+              '\\int_0^1 x e^{3x} \\, dx = \\left[ \\frac{1}{3}x e^{3x} - \\frac{1}{9}e^{3x} \\right]_0^1'
+            ],
+            step3Title: 'Substitute Upper & Lower Limits',
+            step3Latex: [
+              '\\text{At } x = 1: \\quad \\frac{1}{3}e^3 - \\frac{1}{9}e^3 = \\frac{2}{9}e^3',
+              '\\text{At } x = 0: \\quad 0 - \\frac{1}{9}e^0 = -\\frac{1}{9}',
+              '\\text{Subtract}: \\quad \\frac{2}{9}e^3 - \\left(-\\frac{1}{9}\\right)'
+            ],
+            answerLatex: '\\frac{2}{9}e^3 + \\frac{1}{9} = \\frac{2e^3 + 1}{9}',
+            answerNote: 'Exact answer in terms of e'
+          },
+          {
+            questionLatex: '\\int_0^3 x e^{x} \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: 'e^{x}',
+            v: 'e^{x}',
+            tip: 'Find the antiderivative first, then substitute x = 3 and x = 0.',
+            step2Latex: [
+              '\\int_0^3 x e^{x} \\, dx = \\left[ x e^{x} - e^{x} \\right]_0^3'
+            ],
+            step3Title: 'Substitute Upper & Lower Limits',
+            step3Latex: [
+              '\\text{At } x = 3: \\quad 3e^3 - e^3 = 2e^3',
+              '\\text{At } x = 0: \\quad 0 - e^0 = -1',
+              '\\text{Subtract}: \\quad 2e^3 - (-1)'
+            ],
+            answerLatex: '2e^3 + 1',
+            answerNote: 'Exact answer in terms of e'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q9: Definite trigonometric integral with radian limits
+      // -------------------------------------------------------------------------
+      {
+        id: 9,
+        tier: 'exam',
+        subtitle: 'Definite trig integral (radians)',
+        variations: [
+          {
+            questionLatex: '\\int_0^{\\pi/2} x \\cos(2x) \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: '\\cos(2x)',
+            v: '\\frac{1}{2}\\sin(2x)',
+            tip: 'Always work in radians when calculus involves trigonometric functions.',
+            step2Latex: [
+              '\\int_0^{\\pi/2} x \\cos(2x) \\, dx = \\left[ \\frac{1}{2}x\\sin(2x) \\right]_0^{\\pi/2} - \\int_0^{\\pi/2} \\frac{1}{2}\\sin(2x) \\, dx',
+              '= \\left[ \\frac{1}{2}x\\sin(2x) + \\frac{1}{4}\\cos(2x) \\right]_0^{\\pi/2}'
+            ],
+            step3Title: 'Substitute Radian Limits',
+            step3Latex: [
+              '\\text{At } x = \\frac{\\pi}{2}: \\quad \\frac{\\pi}{4}\\sin(\\pi) + \\frac{1}{4}\\cos(\\pi) = 0 + \\frac{1}{4}(-1) = -\\frac{1}{4}',
+              '\\text{At } x = 0: \\quad 0 + \\frac{1}{4}\\cos(0) = \\frac{1}{4}',
+              '\\text{Subtract}: \\quad -\\frac{1}{4} - \\frac{1}{4} = -\\frac{1}{2}'
+            ],
+            answerLatex: '-\\frac{1}{2}',
+            answerNote: 'Since cos(π) = -1 and cos(0) = 1'
+          },
+          {
+            questionLatex: '\\int_0^{\\pi/2} x \\sin(2x) \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: '\\sin(2x)',
+            v: '-\\frac{1}{2}\\cos(2x)',
+            tip: 'Use exact radian values: cos(π) = -1 and sin(π) = 0.',
+            step2Latex: [
+              '\\int_0^{\\pi/2} x \\sin(2x) \\, dx = \\left[ -\\frac{1}{2}x\\cos(2x) + \\frac{1}{4}\\sin(2x) \\right]_0^{\\pi/2}'
+            ],
+            step3Title: 'Substitute Radian Limits',
+            step3Latex: [
+              '\\text{At } x = \\frac{\\pi}{2}: \\quad -\\frac{1}{2}\\left(\\frac{\\pi}{2}\\right)\\cos(\\pi) + \\frac{1}{4}\\sin(\\pi) = -\\frac{\\pi}{4}(-1) + 0 = \\frac{\\pi}{4}',
+              '\\text{At } x = 0: \\quad 0 + \\frac{1}{4}\\sin(0) = 0'
+            ],
+            answerLatex: '\\frac{\\pi}{4}',
+            answerNote: 'Exact value in terms of π'
+          },
+          {
+            questionLatex: '\\int_0^{\\pi} x \\sin x \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: '\\sin x',
+            v: '-\\cos x',
+            tip: 'Recall cos(π) = -1 and sin(π) = 0.',
+            step2Latex: [
+              '\\int_0^{\\pi} x \\sin x \\, dx = \\left[ -x\\cos x + \\sin x \\right]_0^{\\pi}'
+            ],
+            step3Title: 'Substitute Radian Limits',
+            step3Latex: [
+              '\\text{At } x = \\pi: \\quad -\\pi\\cos(\\pi) + \\sin(\\pi) = -\\pi(-1) + 0 = \\pi',
+              '\\text{At } x = 0: \\quad 0 + \\sin(0) = 0'
+            ],
+            answerLatex: '\\pi',
+            answerNote: 'Exact value in terms of π'
+          },
+          {
+            questionLatex: '\\int_0^{\\pi/2} x \\cos x \\, dx',
+            u: 'x',
+            dudx: '1',
+            dvdx: '\\cos x',
+            v: '\\sin x',
+            tip: 'Recall sin(π/2) = 1, cos(π/2) = 0, and cos(0) = 1.',
+            step2Latex: [
+              '\\int_0^{\\pi/2} x \\cos x \\, dx = \\left[ x\\sin x + \\cos x \\right]_0^{\\pi/2}'
+            ],
+            step3Title: 'Substitute Radian Limits',
+            step3Latex: [
+              '\\text{At } x = \\frac{\\pi}{2}: \\quad \\frac{\\pi}{2}\\sin\\left(\\frac{\\pi}{2}\\right) + \\cos\\left(\\frac{\\pi}{2}\\right) = \\frac{\\pi}{2}(1) + 0 = \\frac{\\pi}{2}',
+              '\\text{At } x = 0: \\quad 0 + \\cos(0) = 1'
+            ],
+            answerLatex: '\\frac{\\pi}{2} - 1',
+            answerNote: 'Exact value in terms of π'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q10: Repeated Integration by Parts — two applications
+      // -------------------------------------------------------------------------
+      {
+        id: 10,
+        tier: 'challenge',
+        subtitle: 'Repeated Integration by Parts',
+        variations: [
+          {
+            questionLatex: '\\int x^2 e^x \\, dx',
+            u: 'x^2',
+            dudx: '2x',
+            dvdx: 'e^x',
+            v: 'e^x',
+            tip: 'Degree 2 polynomial (x²) requires Integration by Parts twice.',
+            step2Latex: [
+              '\\int x^2 e^x \\, dx = x^2 e^x - \\int 2x e^x \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ 2x eˣ dx',
+            step3Latex: [
+              '\\text{Let } u_2 = 2x \\implies \\frac{du_2}{dx} = 2, \\quad \\frac{dv_2}{dx} = e^x \\implies v_2 = e^x',
+              '\\int 2x e^x \\, dx = 2x e^x - \\int 2e^x \\, dx = 2x e^x - 2e^x',
+              '\\text{Substitute back}: \\quad x^2 e^x - (2x e^x - 2e^x) + c'
+            ],
+            answerLatex: 'x^2 e^x - 2x e^x + 2e^x + c = e^x(x^2 - 2x + 2) + c',
+            answerNote: 'Use brackets carefully when subtracting the second IBP result'
+          },
+          {
+            questionLatex: '\\int x^2 e^{-x} \\, dx',
+            u: 'x^2',
+            dudx: '2x',
+            dvdx: 'e^{-x}',
+            v: '-e^{-x}',
+            tip: 'Apply Integration by Parts twice, watching the negative signs.',
+            step2Latex: [
+              '\\int x^2 e^{-x} \\, dx = -x^2 e^{-x} - \\int (-e^{-x})(2x) \\, dx = -x^2 e^{-x} + \\int 2x e^{-x} \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ 2x e⁻ˣ dx',
+            step3Latex: [
+              '\\text{Let } u_2 = 2x \\implies \\frac{du_2}{dx} = 2, \\quad \\frac{dv_2}{dx} = e^{-x} \\implies v_2 = -e^{-x}',
+              '\\int 2x e^{-x} \\, dx = -2x e^{-x} + \\int 2e^{-x} \\, dx = -2x e^{-x} - 2e^{-x}'
+            ],
+            answerLatex: '-x^2 e^{-x} - 2x e^{-x} - 2e^{-x} + c = -e^{-x}(x^2 + 2x + 2) + c',
+            answerNote: 'Every term carries a negative sign'
+          },
+          {
+            questionLatex: '\\int 2x^2 e^x \\, dx',
+            u: '2x^2',
+            dudx: '4x',
+            dvdx: 'e^x',
+            v: 'e^x',
+            tip: 'Apply Integration by Parts twice to reduce 2x² → 4x → 4.',
+            step2Latex: [
+              '\\int 2x^2 e^x \\, dx = 2x^2 e^x - \\int 4x e^x \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ 4x eˣ dx',
+            step3Latex: [
+              '\\text{Let } u_2 = 4x \\implies \\frac{du_2}{dx} = 4, \\quad \\frac{dv_2}{dx} = e^x \\implies v_2 = e^x',
+              '\\int 4x e^x \\, dx = 4x e^x - \\int 4e^x \\, dx = 4x e^x - 4e^x',
+              '\\text{Substitute back}: \\quad 2x^2 e^x - (4x e^x - 4e^x) + c'
+            ],
+            answerLatex: '2x^2 e^x - 4x e^x + 4e^x + c = 2e^x(x^2 - 2x + 2) + c',
+            answerNote: 'Use brackets when subtracting the second integral'
+          },
+          {
+            questionLatex: '\\int x^2 \\cos x \\, dx',
+            u: 'x^2',
+            dudx: '2x',
+            dvdx: '\\cos x',
+            v: '\\sin x',
+            tip: 'Apply Integration by Parts twice to reduce x² to a constant.',
+            step2Latex: [
+              '\\int x^2 \\cos x \\, dx = x^2 \\sin x - \\int 2x \\sin x \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ 2x sin x dx',
+            step3Latex: [
+              '\\text{Let } u_2 = 2x \\implies \\frac{du_2}{dx} = 2, \\quad \\frac{dv_2}{dx} = \\sin x \\implies v_2 = -\\cos x',
+              '\\int 2x \\sin x \\, dx = -2x\\cos x + \\int 2\\cos x \\, dx = -2x\\cos x + 2\\sin x',
+              '\\text{Substitute back}: \\quad x^2 \\sin x - (-2x\\cos x + 2\\sin x) + c'
+            ],
+            answerLatex: 'x^2 \\sin x + 2x\\cos x - 2\\sin x + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q11: Repeated Integration by Parts with trig and linear factor
+      // -------------------------------------------------------------------------
+      {
+        id: 11,
+        tier: 'challenge',
+        subtitle: 'Repeated IBP with trig & chain rule',
+        variations: [
+          {
+            questionLatex: '\\int x^2 \\sin(2x) \\, dx',
+            u: 'x^2',
+            dudx: '2x',
+            dvdx: '\\sin(2x)',
+            v: '-\\frac{1}{2}\\cos(2x)',
+            tip: 'Notice how the 1/2 and 2 cancel nicely in the first step!',
+            step2Latex: [
+              '\\int x^2 \\sin(2x) \\, dx = -\\frac{1}{2}x^2\\cos(2x) - \\int \\left(-\\frac{1}{2}\\cos(2x)\\right)(2x) \\, dx',
+              '= -\\frac{1}{2}x^2\\cos(2x) + \\int x\\cos(2x) \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ x cos(2x) dx',
+            step3Latex: [
+              '\\text{Let } u_2 = x \\implies \\frac{du_2}{dx} = 1, \\quad \\frac{dv_2}{dx} = \\cos(2x) \\implies v_2 = \\frac{1}{2}\\sin(2x)',
+              '\\int x\\cos(2x) \\, dx = \\frac{1}{2}x\\sin(2x) - \\int \\frac{1}{2}\\sin(2x) \\, dx = \\frac{1}{2}x\\sin(2x) + \\frac{1}{4}\\cos(2x)'
+            ],
+            answerLatex: '-\\frac{1}{2}x^2\\cos(2x) + \\frac{1}{2}x\\sin(2x) + \\frac{1}{4}\\cos(2x) + c',
+            answerNote: 'Carefully track both signs and powers of 1/2'
+          },
+          {
+            questionLatex: '\\int x^2 \\cos(2x) \\, dx',
+            u: 'x^2',
+            dudx: '2x',
+            dvdx: '\\cos(2x)',
+            v: '\\frac{1}{2}\\sin(2x)',
+            tip: 'The factor of 1/2 cancels with 2x in the remaining integral.',
+            step2Latex: [
+              '\\int x^2 \\cos(2x) \\, dx = \\frac{1}{2}x^2\\sin(2x) - \\int \\left(\\frac{1}{2}\\sin(2x)\\right)(2x) \\, dx',
+              '= \\frac{1}{2}x^2\\sin(2x) - \\int x\\sin(2x) \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ x sin(2x) dx',
+            step3Latex: [
+              '\\text{Let } u_2 = x \\implies \\frac{du_2}{dx} = 1, \\quad \\frac{dv_2}{dx} = \\sin(2x) \\implies v_2 = -\\frac{1}{2}\\cos(2x)',
+              '\\int x\\sin(2x) \\, dx = -\\frac{1}{2}x\\cos(2x) + \\int \\frac{1}{2}\\cos(2x) \\, dx = -\\frac{1}{2}x\\cos(2x) + \\frac{1}{4}\\sin(2x)',
+              '\\text{Substitute back}: \\quad \\frac{1}{2}x^2\\sin(2x) - \\left(-\\frac{1}{2}x\\cos(2x) + \\frac{1}{4}\\sin(2x)\\right) + c'
+            ],
+            answerLatex: '\\frac{1}{2}x^2\\sin(2x) + \\frac{1}{2}x\\cos(2x) - \\frac{1}{4}\\sin(2x) + c',
+            answerNote: 'Watch the subtraction of the bracketed second IBP result'
+          },
+          {
+            questionLatex: '\\int 2x^2 \\sin(2x) \\, dx',
+            u: '2x^2',
+            dudx: '4x',
+            dvdx: '\\sin(2x)',
+            v: '-\\frac{1}{2}\\cos(2x)',
+            tip: 'Apply Integration by Parts twice, simplifying fractions at each stage.',
+            step2Latex: [
+              '\\int 2x^2 \\sin(2x) \\, dx = -x^2\\cos(2x) + \\int 2x\\cos(2x) \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ 2x cos(2x) dx',
+            step3Latex: [
+              '\\text{Let } u_2 = 2x \\implies \\frac{du_2}{dx} = 2, \\quad \\frac{dv_2}{dx} = \\cos(2x) \\implies v_2 = \\frac{1}{2}\\sin(2x)',
+              '\\int 2x\\cos(2x) \\, dx = x\\sin(2x) - \\int \\sin(2x) \\, dx = x\\sin(2x) + \\frac{1}{2}\\cos(2x)'
+            ],
+            answerLatex: '-x^2\\cos(2x) + x\\sin(2x) + \\frac{1}{2}\\cos(2x) + c',
+            answerNote: 'Remember + c for indefinite integrals'
+          },
+          {
+            questionLatex: '\\int x^2 \\sin(3x) \\, dx',
+            u: 'x^2',
+            dudx: '2x',
+            dvdx: '\\sin(3x)',
+            v: '-\\frac{1}{3}\\cos(3x)',
+            tip: 'Divide by 3 each time you integrate sin(3x) or cos(3x).',
+            step2Latex: [
+              '\\int x^2 \\sin(3x) \\, dx = -\\frac{1}{3}x^2\\cos(3x) + \\frac{2}{3}\\int x\\cos(3x) \\, dx'
+            ],
+            step3Title: 'Second Integration by Parts on ∫ x cos(3x) dx',
+            step3Latex: [
+              '\\int x\\cos(3x) \\, dx = \\frac{1}{3}x\\sin(3x) - \\int \\frac{1}{3}\\sin(3x) \\, dx = \\frac{1}{3}x\\sin(3x) + \\frac{1}{9}\\cos(3x)',
+              '\\text{Multiply by } \\frac{2}{3}: \\quad \\frac{2}{9}x\\sin(3x) + \\frac{2}{27}\\cos(3x)'
+            ],
+            answerLatex: '-\\frac{1}{3}x^2\\cos(3x) + \\frac{2}{9}x\\sin(3x) + \\frac{2}{27}\\cos(3x) + c',
+            answerNote: 'Carefully track denominators 3, 9, and 27'
+          }
+        ]
+      },
+
+      // -------------------------------------------------------------------------
+      // Q12: Definite integral requiring repeated Integration by Parts
+      // -------------------------------------------------------------------------
+      {
+        id: 12,
+        tier: 'challenge',
+        subtitle: 'Definite repeated IBP (exact)',
+        variations: [
+          {
+            questionLatex: '\\int_0^1 x^2 e^{-2x} \\, dx',
+            u: 'x^2',
+            dudx: '2x',
+            dvdx: 'e^{-2x}',
+            v: '-\\frac{1}{2}e^{-2x}',
+            tip: 'Find the complete antiderivative via two IBP steps before substituting limits.',
+            step2Latex: [
+              '\\int_0^1 x^2 e^{-2x} \\, dx = \\left[ -\\frac{1}{2}x^2 e^{-2x} \\right]_0^1 - \\int_0^1 \\left(-\\frac{1}{2}e^{-2x}\\right)(2x) \\, dx',
+              '= \\left[ -\\frac{1}{2}x^2 e^{-2x} \\right]_0^1 + \\int_0^1 x e^{-2x} \\, dx'
+            ],
+            step3Title: 'Second IBP & Substitute Limits (0 to 1)',
+            step3Latex: [
+              '\\text{Second IBP}: \\quad \\int x e^{-2x} \\, dx = -\\frac{1}{2}x e^{-2x} - \\frac{1}{4}e^{-2x}',
+              '\\text{Full bracket}: \\quad \\left[ -\\frac{1}{2}x^2 e^{-2x} - \\frac{1}{2}x e^{-2x} - \\frac{1}{4}e^{-2x} \\right]_0^1',
+              '\\text{At } x = 1: \\quad \\left(-\\frac{1}{2} - \\frac{1}{2} - \\frac{1}{4}\\right)e^{-2} = -\\frac{5}{4}e^{-2}, \\qquad \\text{At } x = 0: \\quad -\\frac{1}{4}e^0 = -\\frac{1}{4}'
+            ],
+            answerLatex: '\\frac{1}{4} - \\frac{5}{4}e^{-2} = \\frac{1 - 5e^{-2}}{4}',
+            answerNote: 'Upper limit (-5/4 e⁻²) minus lower limit (-1/4)'
+          },
+          {
+            questionLatex: '\\int_0^1 x^2 e^{2x} \\, dx',
+            u: 'x^2',
+            dudx: '2x',
+            dvdx: 'e^{2x}',
+            v: '\\frac{1}{2}e^{2x}',
+            tip: 'Find the complete antiderivative first, then evaluate at x = 1 and x = 0.',
+            step2Latex: [
+              '\\int_0^1 x^2 e^{2x} \\, dx = \\left[ \\frac{1}{2}x^2 e^{2x} \\right]_0^1 - \\int_0^1 x e^{2x} \\, dx'
+            ],
+            step3Title: 'Second IBP & Substitute Limits (0 to 1)',
+            step3Latex: [
+              '\\text{Second IBP}: \\quad \\int x e^{2x} \\, dx = \\frac{1}{2}x e^{2x} - \\frac{1}{4}e^{2x}',
+              '\\text{Full bracket}: \\quad \\left[ \\frac{1}{2}x^2 e^{2x} - \\frac{1}{2}x e^{2x} + \\frac{1}{4}e^{2x} \\right]_0^1',
+              '\\text{At } x = 1: \\quad \\left(\\frac{1}{2} - \\frac{1}{2} + \\frac{1}{4}\\right)e^2 = \\frac{1}{4}e^2, \\qquad \\text{At } x = 0: \\quad \\frac{1}{4}e^0 = \\frac{1}{4}'
+            ],
+            answerLatex: '\\frac{1}{4}e^2 - \\frac{1}{4} = \\frac{e^2 - 1}{4}',
+            answerNote: 'Exact simplified form in terms of e²'
+          },
+          {
+            questionLatex: '\\int_0^1 x^2 e^{-x} \\, dx',
+            u: 'x^2',
+            dudx: '2x',
+            dvdx: 'e^{-x}',
+            v: '-e^{-x}',
+            tip: 'Apply IBP twice, then substitute x = 1 and x = 0.',
+            step2Latex: [
+              '\\int_0^1 x^2 e^{-x} \\, dx = \\left[ -x^2 e^{-x} \\right]_0^1 + \\int_0^1 2x e^{-x} \\, dx'
+            ],
+            step3Title: 'Second IBP & Substitute Limits (0 to 1)',
+            step3Latex: [
+              '\\text{Second IBP}: \\quad \\int 2x e^{-x} \\, dx = -2x e^{-x} - 2e^{-x}',
+              '\\text{Full bracket}: \\quad \\left[ -e^{-x}(x^2 + 2x + 2) \\right]_0^1',
+              '\\text{At } x = 1: \\quad -5e^{-1}, \\qquad \\text{At } x = 0: \\quad -2e^0 = -2'
+            ],
+            answerLatex: '2 - 5e^{-1} = 2 - \\frac{5}{e}',
+            answerNote: 'Upper limit (-5e⁻¹) minus lower limit (-2)'
+          },
+          {
+            questionLatex: '\\int_0^2 x^2 e^{-x} \\, dx',
+            u: 'x^2',
+            dudx: '2x',
+            dvdx: 'e^{-x}',
+            v: '-e^{-x}',
+            tip: 'Factorise -e⁻ˣ out of the antiderivative before substituting limits.',
+            step2Latex: [
+              '\\int_0^2 x^2 e^{-x} \\, dx = \\left[ -x^2 e^{-x} \\right]_0^2 + \\int_0^2 2x e^{-x} \\, dx'
+            ],
+            step3Title: 'Second IBP & Substitute Limits (0 to 2)',
+            step3Latex: [
+              '\\text{Full bracket}: \\quad \\left[ -e^{-x}(x^2 + 2x + 2) \\right]_0^2',
+              '\\text{At } x = 2: \\quad -e^{-2}(4 + 4 + 2) = -10e^{-2}',
+              '\\text{At } x = 0: \\quad -e^0(0 + 0 + 2) = -2'
+            ],
+            answerLatex: '2 - 10e^{-2}',
+            answerNote: 'Exact answer in terms of e⁻²'
+          }
+        ]
+      }
+    ];
+
+    // ============================================================================
+    // APPLICATION STATE
+    // ============================================================================
+    let currentSetKey = 'ln6'; // 'ln6' (default 6-question ln set) or 'std12' (12-question set)
+    let activeVariationIndicesLn6 = new Array(6).fill(0);
+    let activeVariationIndicesStd12 = new Array(12).fill(0);
+    let completedQuestionsLn6 = new Set();
+    let completedQuestionsStd12 = new Set();
+
+    let isFormulaVisible = true;
+    let currentModalQuestionIndex = null;
+    let revealedStepsCount = 0;
+    let autoShowAllSteps = false;
+
+    function getActiveSlots() {
+      return currentSetKey === 'ln6' ? LN_QUESTION_SLOTS : STD_QUESTION_SLOTS;
+    }
+
+    function getActiveVariationIndices() {
+      return currentSetKey === 'ln6' ? activeVariationIndicesLn6 : activeVariationIndicesStd12;
+    }
+
+    function getActiveCompletedSet() {
+      return currentSetKey === 'ln6' ? completedQuestionsLn6 : completedQuestionsStd12;
+    }
+
+    // ============================================================================
+    // KATEX RENDER HELPER WITH SAFE FALLBACK
+    // ============================================================================
+    function renderMath(latexString, element, displayMode = false) {
+      if (!element) return;
+      if (window.katex) {
+        try {
+          katex.render(latexString, element, {
+            displayMode: displayMode,
+            throwOnError: false
+          });
+          return;
+        } catch (err) {
+          console.error('KaTeX error:', err);
+        }
+      }
+      element.textContent = latexString;
+    }
+
+    function renderMathToString(latexString, displayMode = false) {
+      if (window.katex) {
+        try {
+          return katex.renderToString(latexString, {
+            displayMode: displayMode,
+            throwOnError: false
+          });
+        } catch (err) {
+          console.error('KaTeX string error:', err);
+        }
+      }
+      return `<code>${latexString}</code>`;
+    }
+
+    // ============================================================================
+    // INITIALIZATION
+    // ============================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // Render formula in header & modal
+      const formulaLatex = '\\int u \\frac{dv}{dx} \\, dx = uv - \\int v \\frac{du}{dx} \\, dx';
+      renderMath(formulaLatex, document.getElementById('formulaMathContainer'), false);
+      renderMath(formulaLatex, document.getElementById('modalFormulaRef'), false);
+      renderMath('u, \\frac{du}{dx}, \\frac{dv}{dx}, v', document.getElementById('step1HeaderMath'), false);
+      renderMath('uv - \\int v \\frac{du}{dx} \\, dx', document.getElementById('step2SubFormula'), false);
+
+      // Render active question grid
+      renderQuestionGrid();
+      updateThemeUI();
+    });
+
+    // ============================================================================
+    // SWITCH BETWEEN 6-QUESTION LN(X) SET & 12-QUESTION STANDARD SET
+    // ============================================================================
+    function switchQuestionSet(setKey) {
+      if (currentSetKey === setKey) return;
+      currentSetKey = setKey;
+      closeModal();
+
+      const tabLn = document.getElementById('tabLnSet');
+      const tabStd = document.getElementById('tabStdSet');
+      const mainTitle = document.getElementById('mainHeaderTitle');
+      const grid = document.getElementById('questionGrid');
+
+      if (setKey === 'ln6') {
+        tabLn.className = 'px-3 py-1 rounded-lg text-xs font-bold transition-all bg-indigo-600 text-white shadow-sm';
+        tabStd.className = 'px-3 py-1 rounded-lg text-xs font-bold transition-all text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white';
+        mainTitle.innerHTML = 'Integration by Parts: <span class="text-indigo-600 dark:text-indigo-400">ln(x) as "u"</span> (6 Questions)';
+        grid.className = 'flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-3.5 sm:gap-5';
+      } else {
+        tabStd.className = 'px-3 py-1 rounded-lg text-xs font-bold transition-all bg-indigo-600 text-white shadow-sm';
+        tabLn.className = 'px-3 py-1 rounded-lg text-xs font-bold transition-all text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white';
+        mainTitle.innerHTML = 'AQA Year 13 Maths: <span class="text-indigo-600 dark:text-indigo-400">Integration by Parts</span> (12 Questions)';
+        grid.className = 'flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-4 gap-2.5 sm:gap-3.5';
+      }
+
+      // Check if current set has non-default variations active
+      const activeIndices = getActiveVariationIndices();
+      const isCustomized = activeIndices.some(i => i !== 0);
+      const restoreBtn = document.getElementById('restoreDefaultBtn');
+      if (isCustomized) {
+        restoreBtn.classList.remove('hidden');
+        restoreBtn.classList.add('flex');
+      } else {
+        restoreBtn.classList.add('hidden');
+        restoreBtn.classList.remove('flex');
+      }
+
+      renderQuestionGrid();
+    }
+
+    // ============================================================================
+    // RENDER QUESTION GRID (3x2 FOR LN SET, 3x4 FOR STANDARD SET)
+    // ============================================================================
+    function renderQuestionGrid() {
+      const grid = document.getElementById('questionGrid');
+      grid.innerHTML = '';
+
+      const slots = getActiveSlots();
+      const variationIndices = getActiveVariationIndices();
+      const completedSet = getActiveCompletedSet();
+      const isSixGrid = currentSetKey === 'ln6';
+
+      slots.forEach((slot, idx) => {
+        const variationIndex = variationIndices[idx];
+        const currentQ = slot.variations[variationIndex];
+        const tier = TIER_CONFIG[slot.tier];
+        const isCompleted = completedSet.has(slot.id);
+
+        const card = document.createElement('div');
+        card.className = [
+          'question-card relative rounded-2xl bg-white dark:bg-slate-900 border',
+          isCompleted
+            ? 'border-emerald-500/80 dark:border-emerald-500/80 bg-emerald-50/30 dark:bg-emerald-950/20'
+            : 'border-slate-200/90 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500',
+          tier.accentBorder,
+          isSixGrid
+            ? 'shadow-sm hover:shadow-lg p-4 sm:p-5 flex flex-col justify-between cursor-pointer overflow-hidden group'
+            : 'shadow-sm hover:shadow-md p-3 sm:p-3.5 flex flex-col justify-between cursor-pointer overflow-hidden group'
+        ].join(' ');
+
+        card.onclick = () => openQuestionModal(idx);
+
+        // Card Top Bar: Question Number + Difficulty Badge + Optional Exam Tag + Completed Tick
+        const topRow = document.createElement('div');
+        topRow.className = 'flex items-center justify-between gap-2 z-10';
+
+        topRow.innerHTML = `
+          <div class="flex flex-wrap items-center gap-2 min-w-0">
+            <span class="${isSixGrid ? 'px-3 py-1 text-sm sm:text-base' : 'px-2.5 py-0.5 text-xs sm:text-sm'} rounded-lg font-extrabold tracking-tight shadow-sm ${tier.numberPill}">
+              Q${slot.id}
+            </span>
+            <span class="${isSixGrid ? 'px-3 py-1 text-xs sm:text-sm' : 'px-2.5 py-0.5 text-[11px] sm:text-xs'} rounded-full font-bold tracking-wide truncate ${tier.badgeClass}">
+              ${tier.label}
+            </span>
+            ${
+              currentQ.sourceTag
+                ? `<span class="hidden xl:inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                    ${currentQ.sourceTag}
+                  </span>`
+                : ''
+            }
+          </div>
+
+          <button
+            type="button"
+            onclick="toggleQuestionCompleted(event, ${slot.id})"
+            title="${isCompleted ? 'Completed (Click to unmark)' : 'Mark question as completed'}"
+            class="${isSixGrid ? 'w-8 h-8' : 'w-7 h-7'} rounded-lg flex items-center justify-center border transition-all shrink-0 ${
+              isCompleted
+                ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm'
+                : 'border-slate-300 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-800/80 text-transparent hover:border-emerald-500 hover:text-emerald-500/60'
+            }"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </button>
+        `;
+
+        // Card Center: Either single large integral OR structured (a) & (b) exam question (like Q6)
+        const mathWrapper = document.createElement('div');
+        if (currentQ.partALatex && currentQ.partBLatex) {
+          mathWrapper.className = 'card-math-6-multipart my-auto py-2 flex flex-col justify-center gap-2.5 text-slate-900 dark:text-white overflow-x-auto';
+          mathWrapper.innerHTML = `
+            <div class="flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60">
+              <span class="w-7 h-7 rounded-lg bg-amber-500 text-white font-extrabold text-sm flex items-center justify-center shrink-0 shadow-sm">a</span>
+              <div class="overflow-x-auto">${renderMathToString(currentQ.partALatex, false)}</div>
+            </div>
+            <div class="flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60">
+              <span class="w-7 h-7 rounded-lg bg-amber-500 text-white font-extrabold text-sm flex items-center justify-center shrink-0 shadow-sm">b</span>
+              <div class="overflow-x-auto">${renderMathToString(currentQ.partBLatex, false)}</div>
+            </div>
+          `;
+        } else {
+          mathWrapper.className = `${isSixGrid ? 'card-math-6' : 'card-math-12'} my-auto py-2 flex items-center justify-center text-center text-slate-900 dark:text-white overflow-x-auto`;
+          renderMath(currentQ.questionLatex, mathWrapper, true);
+        }
+
+        // Card Bottom Subtle Footer: Topic Description + "Worked Solution" prompt
+        const bottomRow = document.createElement('div');
+        bottomRow.className = `flex items-center justify-between ${isSixGrid ? 'text-xs sm:text-sm pt-2' : 'text-[11px] sm:text-xs pt-1'} text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/60`;
+        bottomRow.innerHTML = `
+          <span class="truncate font-semibold">${slot.subtitle}</span>
+          <span class="font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-1 shrink-0">
+            <span>Click for Solution</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </span>
+        `;
+
+        card.appendChild(topRow);
+        card.appendChild(mathWrapper);
+        card.appendChild(bottomRow);
+        grid.appendChild(card);
+      });
+
+      // Update header progress counter
+      const progressCounter = document.getElementById('progressCounter');
+      if (progressCounter) {
+        progressCounter.textContent = `${completedSet.size} / ${slots.length} Completed`;
+      }
+    }
+
+    // ============================================================================
+    // HEADER CONTROLS: FORMULA PILL, RANDOMIZER, RESET, THEME
+    // ============================================================================
+    function toggleFormula() {
+      isFormulaVisible = !isFormulaVisible;
+      const mathContainer = document.getElementById('formulaMathContainer');
+      const hiddenBadge = document.getElementById('formulaHiddenBadge');
+      const eyeIcon = document.getElementById('formulaEyeIcon');
+
+      if (isFormulaVisible) {
+        mathContainer.classList.remove('hidden');
+        hiddenBadge.classList.add('hidden');
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        `;
+      } else {
+        mathContainer.classList.add('hidden');
+        hiddenBadge.classList.remove('hidden');
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+        `;
+      }
+    }
+
+    function generateNewValues() {
+      const slots = getActiveSlots();
+      const currentIndices = getActiveVariationIndices();
+
+      const updated = slots.map((slot, idx) => {
+        const currentIdx = currentIndices[idx];
+        const totalVars = slot.variations.length;
+        const offset = 1 + Math.floor(Math.random() * (totalVars - 1));
+        return (currentIdx + offset) % totalVars;
+      });
+
+      if (currentSetKey === 'ln6') {
+        activeVariationIndicesLn6 = updated;
+      } else {
+        activeVariationIndicesStd12 = updated;
+      }
+
+      document.getElementById('restoreDefaultBtn').classList.remove('hidden');
+      document.getElementById('restoreDefaultBtn').classList.add('flex');
+
+      renderQuestionGrid();
+      if (currentModalQuestionIndex !== null) {
+        populateModalContent(currentModalQuestionIndex);
+      }
+    }
+
+    function restoreDefaultQuestions() {
+      if (currentSetKey === 'ln6') {
+        activeVariationIndicesLn6 = new Array(6).fill(0);
+      } else {
+        activeVariationIndicesStd12 = new Array(12).fill(0);
+      }
+
+      document.getElementById('restoreDefaultBtn').classList.add('hidden');
+      document.getElementById('restoreDefaultBtn').classList.remove('flex');
+
+      renderQuestionGrid();
+      if (currentModalQuestionIndex !== null) {
+        populateModalContent(currentModalQuestionIndex);
+      }
+    }
+
+    function toggleQuestionCompleted(event, questionId) {
+      event.stopPropagation();
+      const completedSet = getActiveCompletedSet();
+      if (completedSet.has(questionId)) {
+        completedSet.delete(questionId);
+      } else {
+        completedSet.add(questionId);
+      }
+      renderQuestionGrid();
+      updateModalCompleteButton();
+    }
+
+    function resetCompleted() {
+      getActiveCompletedSet().clear();
+      renderQuestionGrid();
+      updateModalCompleteButton();
+    }
+
+    function toggleTheme() {
+      const htmlEl = document.documentElement;
+      htmlEl.classList.toggle('dark');
+      updateThemeUI();
+    }
+
+    function updateThemeUI() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const sunIcon = document.getElementById('sunIcon');
+      const moonIcon = document.getElementById('moonIcon');
+      const themeText = document.getElementById('themeToggleText');
+
+      if (isDark) {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+        themeText.textContent = 'Light Board';
+      } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+        themeText.textContent = 'Dark Board';
+      }
+    }
+
+    // ============================================================================
+    // WORKED SOLUTION MODAL LOGIC
+    // ============================================================================
+    function openQuestionModal(slotIndex) {
+      currentModalQuestionIndex = slotIndex;
+      const modal = document.getElementById('solutionModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      // Set initial revealed steps based on teacher preference
+      revealedStepsCount = autoShowAllSteps ? 4 : 1;
+      populateModalContent(slotIndex);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('solutionModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      currentModalQuestionIndex = null;
+    }
+
+    function handleModalBackdropClick(event) {
+      if (event.target.id === 'solutionModal') {
+        closeModal();
+      }
+    }
+
+    function navigateModal(direction) {
+      if (currentModalQuestionIndex === null) return;
+      const slots = getActiveSlots();
+      const nextIndex = (currentModalQuestionIndex + direction + slots.length) % slots.length;
+      currentModalQuestionIndex = nextIndex;
+      revealedStepsCount = autoShowAllSteps ? 4 : 1;
+      populateModalContent(nextIndex);
+    }
+
+    function populateModalContent(slotIndex) {
+      const slots = getActiveSlots();
+      const variationIndices = getActiveVariationIndices();
+      const slot = slots[slotIndex];
+      const variation = slot.variations[variationIndices[slotIndex]];
+      const tier = TIER_CONFIG[slot.tier];
+
+      // Header metadata
+      const qNumEl = document.getElementById('modalQNumber');
+      qNumEl.textContent = `Q${slot.id}`;
+      qNumEl.className = `px-3 py-1 rounded-lg font-extrabold text-sm sm:text-base shadow-sm ${tier.numberPill}`;
+
+      const diffBadge = document.getElementById('modalDifficultyBadge');
+      diffBadge.textContent = tier.label;
+      diffBadge.className = `px-3 py-1 rounded-full text-xs sm:text-sm font-bold tracking-wide ${tier.badgeClass}`;
+
+      document.getElementById('modalSubtitle').textContent = variation.sourceTag || slot.subtitle;
+
+      // Render main question integral (or structured a & b parts if present)
+      const modalMathEl = document.getElementById('modalQuestionMath');
+      const promptBadge = document.getElementById('modalPromptBadge');
+      if (variation.partALatex && variation.partBLatex) {
+        promptBadge.textContent = 'Exam Question';
+        modalMathEl.innerHTML = `
+          <div class="flex flex-col gap-1.5 text-sm sm:text-base">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-md bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0">a</span>
+              <div>${renderMathToString(variation.partALatex, false)}</div>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-md bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0">b</span>
+              <div>${renderMathToString(variation.partBLatex, false)}</div>
+            </div>
+          </div>
+        `;
+      } else {
+        promptBadge.textContent = 'Evaluate';
+        renderMath(variation.questionLatex, modalMathEl, true);
+      }
+
+      // Populate Step 1: Identify Parts (u, du/dx, dv/dx, v)
+      document.getElementById('step1Tip').textContent = variation.tip || '';
+      const step1Container = document.getElementById('stepContent1');
+      step1Container.innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 modal-step-math">
+          <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 flex items-center justify-between gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Choose u</span>
+            <div class="overflow-x-auto">${renderMathToString(`u = ${variation.u}`)}</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 flex items-center justify-between gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">${variation.partALatex ? 'Part (a): du/dx' : 'Differentiate'}</span>
+            <div class="overflow-x-auto">${renderMathToString(`\\frac{du}{dx} = ${variation.dudx}`)}</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 flex items-center justify-between gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Choose dv/dx</span>
+            <div class="overflow-x-auto">${renderMathToString(`\\frac{dv}{dx} = ${variation.dvdx}`)}</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 flex items-center justify-between gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Integrate</span>
+            <div class="overflow-x-auto">${renderMathToString(`v = ${variation.v}`)}</div>
+          </div>
+        </div>
+      `;
+
+      // Populate Step 2: Apply Formula
+      const step2Container = document.getElementById('stepContent2');
+      step2Container.innerHTML = variation.step2Latex
+        .map(line => `<div class="py-1 overflow-x-auto">${renderMathToString(line, true)}</div>`)
+        .join('');
+
+      // Populate Step 3: Evaluate Remaining Integral / Second IBP / Limits
+      document.getElementById('step3Title').textContent = variation.step3Title || 'Evaluate Remaining Integral';
+      const step3Container = document.getElementById('stepContent3');
+      step3Container.innerHTML = variation.step3Latex
+        .map(line => `<div class="py-1 overflow-x-auto">${renderMathToString(line, true)}</div>`)
+        .join('');
+
+      // Populate Step 4: Final Answer
+      document.getElementById('step4Note').textContent = variation.answerNote || '';
+      const step4Container = document.getElementById('stepContent4');
+      step4Container.innerHTML = `<div class="py-1 overflow-x-auto">${renderMathToString(variation.answerLatex, true)}</div>`;
+
+      updateStepVisibilityUI();
+      updateModalCompleteButton();
+    }
+
+    function updateStepVisibilityUI() {
+      const stepTitles = [
+        'Reveal Step 1 (Identify Parts)',
+        'Reveal Step 2 (Apply Formula)',
+        'Reveal Step 3 (Evaluate Integral)',
+        'Reveal Step 4 (Final Answer)'
+      ];
+
+      for (let i = 1; i <= 4; i++) {
+        const contentEl = document.getElementById(`stepContent${i}`);
+        const cardEl = document.getElementById(`stepCard${i}`);
+
+        if (i <= revealedStepsCount) {
+          contentEl.classList.remove('hidden');
+          cardEl.classList.remove('opacity-50');
+        } else {
+          contentEl.classList.add('hidden');
+          cardEl.classList.add('opacity-50');
+        }
+      }
+
+      const nextBtn = document.getElementById('revealNextStepBtn');
+      const nextBtnText = document.getElementById('revealNextStepText');
+      const toggleAllBtn = document.getElementById('toggleAllStepsBtn');
+      const badge = document.getElementById('stepProgressBadge');
+
+      badge.textContent = `${revealedStepsCount} / 4 steps shown`;
+
+      if (revealedStepsCount < 4) {
+        nextBtn.disabled = false;
+        nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        nextBtnText.textContent = stepTitles[revealedStepsCount];
+        toggleAllBtn.textContent = 'Show All Steps';
+      } else {
+        nextBtn.disabled = true;
+        nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        nextBtnText.textContent = 'All Steps Revealed';
+        toggleAllBtn.textContent = 'Hide All Steps';
+      }
+    }
+
+    function revealNextStep() {
+      if (revealedStepsCount < 4) {
+        revealedStepsCount++;
+        updateStepVisibilityUI();
+        // Smooth scroll to newly revealed step inside modal
+        const newlyRevealedCard = document.getElementById(`stepCard${revealedStepsCount}`);
+        if (newlyRevealedCard) {
+          newlyRevealedCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    }
+
+    function toggleAllSteps() {
+      if (revealedStepsCount < 4) {
+        revealedStepsCount = 4;
+      } else {
+        revealedStepsCount = 0;
+      }
+      updateStepVisibilityUI();
+    }
+
+    function toggleAutoShowAllPreference() {
+      const checkbox = document.getElementById('autoShowAllCheckbox');
+      autoShowAllSteps = checkbox.checked;
+      if (autoShowAllSteps && revealedStepsCount < 4) {
+        revealedStepsCount = 4;
+        updateStepVisibilityUI();
+      }
+    }
+
+    function toggleCurrentModalQuestionCompleted() {
+      if (currentModalQuestionIndex === null) return;
+      const slots = getActiveSlots();
+      const completedSet = getActiveCompletedSet();
+      const slot = slots[currentModalQuestionIndex];
+      if (completedSet.has(slot.id)) {
+        completedSet.delete(slot.id);
+      } else {
+        completedSet.add(slot.id);
+      }
+      renderQuestionGrid();
+      updateModalCompleteButton();
+    }
+
+    function updateModalCompleteButton() {
+      if (currentModalQuestionIndex === null) return;
+      const slots = getActiveSlots();
+      const completedSet = getActiveCompletedSet();
+      const slot = slots[currentModalQuestionIndex];
+      const isCompleted = completedSet.has(slot.id);
+      const btn = document.getElementById('modalCompleteBtn');
+      const btnText = document.getElementById('modalCompleteBtnText');
+
+      if (isCompleted) {
+        btn.className = 'flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm border border-emerald-600 bg-emerald-600 text-white shadow-sm transition-all';
+        btnText.textContent = 'Completed';
+      } else {
+        btn.className = 'flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:border-emerald-500 text-slate-700 dark:text-slate-200 transition-all';
+        btnText.textContent = 'Mark Complete';
+      }
+    }
+
+    // ============================================================================
+    // KEYBOARD SHORTCUTS FOR CLASSROOM PRESENTATION
+    // ============================================================================
+    window.addEventListener('keydown', (e) => {
+      if (currentModalQuestionIndex === null) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        navigateModal(1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        navigateModal(-1);
+      } else if (e.key === ' ' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (revealedStepsCount < 4) {
+          revealNextStep();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
